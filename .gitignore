@@ -1,5 +1,16 @@
-# Compiled class file
+openapi.yaml
+
+.idea
+*.iml
 *.class
+
+generated/
+
+# build files
+**/target
+target
+.gradle
+build
 
 # Log file
 *.log
