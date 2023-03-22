@@ -1,0 +1,7 @@
+apiPackage: "com.piiano.vault.client.openapi"
+modelPackage: "com.piiano.vault.client.openapi.model"
+invokerPackage: "com.piiano.vault.client.openapi"
+groupId: "com.piiano.vault"
+artifactId: "openapi"
+artifactVersion: "1.2.2-SNAPSHOT"
+booleanGetterPrefix: "is"
