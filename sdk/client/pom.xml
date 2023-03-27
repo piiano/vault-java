@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.piiano.vault</groupId>
-	<artifactId>sdk-java</artifactId>
+	<artifactId>client</artifactId>
 	<version>${project.version}</version>
-	<name>vault-sdk-java</name>
+	<name>client</name>
 	<description>Piiano vault sdk</description>
 	<packaging>jar</packaging>
 
@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
-			<version>3.0.2</version>
+			<version>${jsr305.version}</version>
 		</dependency>
 
 		<!-- JSON processing: jackson -->
@@ -114,7 +114,7 @@
 		<dependency>
 			<groupId>com.github.scribejava</groupId>
 			<artifactId>scribejava-apis</artifactId>
-			<version>8.3.1</version>
+			<version>${scribejava-apis.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tomitribe</groupId>
@@ -195,12 +195,27 @@
 		<junit-jupiter-api.version>5.9.2</junit-jupiter-api.version>
 		<lombok.version>1.18.26</lombok.version>
 		<guava.version>31.1-jre</guava.version>
-		<swagger-annotations.version>1.5.8</swagger-annotations.version>
-		<jersey-version>2.35</jersey-version>
-		<jackson-version>2.13.0</jackson-version>
-		<jackson-databind-nullable-version>0.2.1</jackson-databind-nullable-version>
+		<swagger-annotations.version>1.6.8</swagger-annotations.version>
+		<jersey-version>3.1.1</jersey-version>
+		<jackson-version>2.14.2</jackson-version>
+		<jackson-databind-nullable-version>0.2.6</jackson-databind-nullable-version>
 		<maven-plugin-version>1.0.0</maven-plugin-version>
-		<http-signature-version>1.4</http-signature-version>
+		<http-signature-version>1.8</http-signature-version>
+		<scribejava-apis.version>8.3.3</scribejava-apis.version>
+		<jsr305.version>3.0.2</jsr305.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>snapshots.repo</id>
+			<name>Apache Development Snapshot Repository</name>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 </project>
