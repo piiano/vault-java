@@ -1,12 +1,12 @@
 openapi.yaml
+openapi/
 
+# IDE
 .idea
 *.iml
 *.class
 
-generated/
-
-# build files
+# Build files
 **/target
 target
 .gradle
