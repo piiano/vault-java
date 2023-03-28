@@ -210,8 +210,8 @@ if [ $? != 0 ] ; then
 	echo "Failed get all users"
 fi
 
-# Show mysql tokenized data
-debug "Showing tokenized data in mysql (note the 'name' and 'phone_number' columns)"
+# Show mysql encrypted data
+debug "Showing encrypted data in mysql (note the 'name' and 'phone_number' columns)"
 mysql_cmd false 'select * from users;'
 
 stop_all
