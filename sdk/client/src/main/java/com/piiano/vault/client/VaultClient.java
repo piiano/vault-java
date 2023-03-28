@@ -2,6 +2,7 @@ package com.piiano.vault.client;
 
 import com.piiano.vault.client.model.*;
 import com.piiano.vault.client.openapi.ApiClient;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Client for the Tokens API.
@@ -22,6 +23,24 @@ public class VaultClient {
 
     public CryptoClient cryptoClint() {
         return cryptoClient;
+    }
+
+    public static ApiClient getPvaultClient() {
+        String pvaultUrl = System.getenv("pvault_url");
+        if (StringUtils.isEmpty(pvaultUrl)) {
+            pvaultUrl = "http://localhost:8123";
+        }
+
+        String pvaultAuth = System.getenv("pvault_auth");
+        if (StringUtils.isEmpty(pvaultAuth)) {
+            pvaultAuth = "pvaultauth";
+        }
+
+        ApiClient pvaultClient = com.piiano.vault.client.openapi.Configuration.getDefaultApiClient();
+        pvaultClient.setBasePath(pvaultUrl);
+        pvaultClient.setBearerToken(pvaultAuth);
+        pvaultClient.addDefaultHeader("Content-Type", "application/json");
+        return pvaultClient;
     }
 
     public void main(String[] args) {

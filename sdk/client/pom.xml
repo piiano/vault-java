@@ -5,7 +5,7 @@
 
 	<groupId>com.piiano.vault</groupId>
 	<artifactId>client</artifactId>
-	<version>${project.version}</version>
+	<version>1.2.2-SNAPSHOT</version>
 	<name>client</name>
 	<description>Piiano vault sdk</description>
 	<packaging>jar</packaging>
@@ -144,21 +144,38 @@
                 </configuration>
             </plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.3.0</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.4.1</version>
 				<executions>
 					<execution>
-						<id>add-source</id>
-						<phase>generate-sources</phase>
+						<id>attach-javadocs</id>
 						<goals>
-							<goal>add-source</goal>
+							<goal>jar</goal>
 						</goals>
-						<configuration>
-							<sources>
-								<source>src/main/generated/src/main/java</source>
-							</sources>
-						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<doclint>none</doclint>
+					<tags>
+						<tag>
+							<name>http.response.details</name>
+							<placement>a</placement>
+							<head>Http Response Details:</head>
+						</tag>
+					</tags>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

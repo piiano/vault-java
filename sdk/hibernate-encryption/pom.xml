@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.piiano.vault</groupId>
+	<artifactId>hibernate-encryption</artifactId>
+	<version>1.2.2-SNAPSHOT</version>
+	<name>hibernate-encryption</name>
+	<description>Piiano vault sdk</description>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.piiano.vault</groupId>
+			<artifactId>client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>6.0.6</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.6.9.Final</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<project.version>1.2.2-SNAPSHOT</project.version>
+
+		<java.version>8</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+
+		<junit.version>4.13.2</junit.version>
+		<junit-jupiter-api.version>5.9.2</junit-jupiter-api.version>
+		<lombok.version>1.18.26</lombok.version>
+		<guava.version>31.1-jre</guava.version>
+		<swagger-annotations.version>1.6.8</swagger-annotations.version>
+		<jersey-version>3.1.1</jersey-version>
+		<jackson-version>2.14.2</jackson-version>
+		<jackson-databind-nullable-version>0.2.6</jackson-databind-nullable-version>
+		<maven-plugin-version>1.0.0</maven-plugin-version>
+		<http-signature-version>1.8</http-signature-version>
+		<scribejava-apis.version>8.3.3</scribejava-apis.version>
+		<jsr305.version>3.0.2</jsr305.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>snapshots.repo</id>
+			<name>Apache Development Snapshot Repository</name>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+</project>
