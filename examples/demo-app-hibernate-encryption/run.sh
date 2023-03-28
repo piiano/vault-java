@@ -86,7 +86,7 @@ function usage_and_exit()
 function stop_all()
 {
 	echo "stop pvault"
-	docker rm -f pvault-db pvault-server
+	docker rm -f pvault-db pvault-server pvault-dev
 	echo "stop mysql"
 	docker rm -f mysql
 	if [[ $(jobs -p) ]]; then
