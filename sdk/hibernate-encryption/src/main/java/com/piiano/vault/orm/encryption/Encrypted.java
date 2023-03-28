@@ -1,13 +1,6 @@
 package com.piiano.vault.orm.encryption;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.piiano.vault.client.CryptoClient;
-import com.piiano.vault.client.model.AccessReason;
-import com.piiano.vault.client.model.DecryptParams;
-import com.piiano.vault.client.model.DefaultParams;
-import com.piiano.vault.client.model.EncryptParams;
-import com.piiano.vault.client.openapi.model.*;
+import com.piiano.vault.client.openapi.model.EncryptionType;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.DynamicParameterizedType;
@@ -18,11 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Properties;
-
-import static com.piiano.vault.client.VaultClient.getPvaultClient;
 
 /**
  * This class is used to tokenize a field of an entity. it implements the UserType interface
@@ -42,12 +32,12 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 	private EncryptionType encryptionType;
 	private String collectionName;
 	private String propertyName;
+	private String requestedProperty;
 
-	private final CryptoClient cryptoClient;
+	private final Encryptor encryptor;
 
 	public Encrypted() {
-		cryptoClient = new CryptoClient(getPvaultClient(), DefaultParams.builder()
-				.accessReason(AccessReason.AppFunctionality).build());
+		encryptor = new Encryptor();
 	}
 
 	@Override
@@ -102,19 +92,19 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 	@Override
 	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
+
 		if (rs.wasNull()) {
 			return null;
 		}
+
 		try {
-			DecryptionRequest request = new DecryptionRequest().encryptedObject(
-					new EncryptedObjectInput().ciphertext(rs.getString(names[0])));
-			return cryptoClient.decrypt(
-							ImmutableList.of(request),
-							Collections.emptySet(),
-							DecryptParams.builder().collection(this.collectionName).build())
-					.get(0).getFields().get(this.propertyName);
+			String value = rs.getString(names[0]);
+			if (encryptor.isEncrypted(value)) {
+				value = encryptor.decrypt(this.collectionName, this.requestedProperty, value).toString();
+			}
+			return value;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new HibernateException(e);
 		}
 	}
 
@@ -122,28 +112,20 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
 
-		String propValue = null;
-		if (value != null) {
-			propValue = value.toString();
-			if (!isEncrypted(propValue)) {
-				EncryptionRequest request = new EncryptionRequest()
-						.type(this.encryptionType)
-						._object(new InputObject().fields(ImmutableMap.of(this.propertyName, propValue)));
-				try {
-					propValue = cryptoClient.encrypt(
-							ImmutableList.of(request),
-							EncryptParams.builder().collection(this.collectionName).build())
-							.get(0).getCiphertext();
-				} catch (Exception e) {
-					throw new RuntimeException(e);
+		try {
+			String propValue = null;
+			if (value != null) {
+				propValue = value.toString();
+
+				if (!encryptor.isEncrypted(propValue)) {
+					propValue = encryptor.encrypt(encryptionType, collectionName, propertyName, propValue);
 				}
 			}
-		}
-		st.setString(index, propValue);
-	}
 
-	private boolean isEncrypted(String propValue) {
-		return propValue.startsWith("encrypted");
+			st.setString(index, propValue);
+		} catch (Exception e) {
+			throw new HibernateException(e);
+		}
 	}
 
 	@Override
@@ -153,7 +135,13 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 		} else {
 			this.encryptionType = EncryptionType.RANDOMIZED;
 		}
+
 		this.collectionName = parameters.getProperty(COLLECTION);
+
 		this.propertyName = parameters.getProperty(PROPERTY);
+		this.requestedProperty = this.propertyName;
+		if (this.propertyName.indexOf(".") > 0) {
+			this.propertyName = this.propertyName.substring(0, this.propertyName.indexOf("."));
+		}
 	}
 }
