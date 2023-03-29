@@ -19,6 +19,7 @@ $(GEN_FOLDER)/pom.xml: $(OPENAPI_YAML) $(CODEGEN_CONFIG_FILE)
         -g java \
         -i pwd/$(OPENAPI_YAML) \
         -c pwd/$(CODEGEN_CONFIG_FILE) \
+        -p
         -o pwd/$(GEN_FOLDER)
 
 .PHONY: generate-openapi

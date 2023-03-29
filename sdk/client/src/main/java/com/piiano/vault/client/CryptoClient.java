@@ -500,7 +500,7 @@ public class CryptoClient {
      * Hash
      * Creates a deterministic hash based on an object's property values, collection, and scope. Supports bulk operations.  This operation is similar to using the [tokenize](/api/operations/tokenize) operation for a token of type &#x60;deterministic&#x60;. The hash value is identical to the token ID generated for the same combination of collection, object, property values, and scope. However, unlike the token, this hash is not stored in Vault's storage and, as such, cannot be detokenized, searched, or invalidated.
      * @param hashObjectRequest Details of the hashing request. (required)
-     * @param hashObjectsParams Additional params for the request.
+     * @param hashParams Additional params for the request.
      * @return TokenValue
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -516,16 +516,16 @@ public class CryptoClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public TokenValue hash(HashObjectRequest hashObjectRequest, HashObjectsParams hashObjectsParams) throws ApiException {
+    public TokenValue hash(HashObjectRequest hashObjectRequest, HashParams hashParams) throws ApiException {
 
-        AccessReason accessReason = hashObjectsParams.getAccessReason() != null ? hashObjectsParams.getAccessReason() : this.defaultParams.getAccessReason();
+        AccessReason accessReason = hashParams.getAccessReason() != null ? hashParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         List<TokenValue> tokenValues = this.cryptoApi.hashObjects(
-                StringUtils.isNotEmpty(hashObjectsParams.getCollection()) ? hashObjectsParams.getCollection() : this.defaultParams.getCollection(),
+                StringUtils.isNotEmpty(hashParams.getCollection()) ? hashParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 ImmutableList.of(hashObjectRequest),
                 accessReason.getAdhocReason(),
-                hashObjectsParams.getReloadCache() != null ? hashObjectsParams.getReloadCache() : this.defaultParams.isReloadCache()
+                hashParams.getReloadCache() != null ? hashParams.getReloadCache() : this.defaultParams.isReloadCache()
         );
 
         if (tokenValues.size() == 0) {
@@ -568,7 +568,7 @@ public class CryptoClient {
      * Hash bulk
      * Creates a deterministic hash based on an object's property values, collection, and scope. Supports bulk operations.  This operation is similar to using the [tokenize](/api/operations/tokenize) operation for a token of type &#x60;deterministic&#x60;. The hash value is identical to the token ID generated for the same combination of collection, object, property values, and scope. However, unlike the token, this hash is not stored in Vault's storage and, as such, cannot be detokenized, searched, or invalidated.
      * @param hashObjectRequests Details of the hashing request. (required)
-     * @param hashObjectsParams Additional params for the request.
+     * @param hashParams Additional params for the request.
      * @return List<TokenValue>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -584,16 +584,16 @@ public class CryptoClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public List<TokenValue> hashBulk(List<HashObjectRequest> hashObjectRequests, HashObjectsParams hashObjectsParams) throws ApiException {
+    public List<TokenValue> hashBulk(List<HashObjectRequest> hashObjectRequests, HashParams hashParams) throws ApiException {
 
-        AccessReason accessReason = hashObjectsParams.getAccessReason() != null ? hashObjectsParams.getAccessReason() : this.defaultParams.getAccessReason();
+        AccessReason accessReason = hashParams.getAccessReason() != null ? hashParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         return this.cryptoApi.hashObjects(
-                StringUtils.isNotEmpty(hashObjectsParams.getCollection()) ? hashObjectsParams.getCollection() : this.defaultParams.getCollection(),
+                StringUtils.isNotEmpty(hashParams.getCollection()) ? hashParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 hashObjectRequests,
                 accessReason.getAdhocReason(),
-                hashObjectsParams.getReloadCache() != null ? hashObjectsParams.getReloadCache() : this.defaultParams.isReloadCache()
+                hashParams.getReloadCache() != null ? hashParams.getReloadCache() : this.defaultParams.isReloadCache()
         );
     }
 }

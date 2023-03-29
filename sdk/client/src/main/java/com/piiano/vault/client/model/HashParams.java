@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class HashObjectsParams {
+public class HashParams {
 
     /**
      * collection The name of the collection containing the objects. (required)
