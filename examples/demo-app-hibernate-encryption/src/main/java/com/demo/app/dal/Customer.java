@@ -10,7 +10,7 @@ import javax.persistence.*;
 
 import static com.piiano.vault.orm.encryption.Encrypted.*;
 
-@Table(name = "users")
+@Table(name = "customers")
 @Entity
 @TypeDef(name = "Encrypted", typeClass = Encrypted.class)
 @Getter
@@ -18,22 +18,22 @@ import static com.piiano.vault.orm.encryption.Encrypted.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
     @Column(name = "name")
-    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "users"), @Parameter(name = PROPERTY, value = "name")})
+    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "name")})
     private String name;
 
     @Column(name = "phone_number")
-    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "users"), @Parameter(name = PROPERTY, value = "phone_number")})
+    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "phone_number")})
     private String phoneNumber;
 
     @Column(name = "masked_phone_number")
-    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "users"), @Parameter(name = PROPERTY, value = "phone_number.mask")})
+    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "phone_number.mask")})
     private String maskedPhoneNumber;
 
     @Column(name = "country")

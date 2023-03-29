@@ -50,10 +50,10 @@ grant all on app_db.* to 'springuser'@'%';
 
 2. Piiano vault
 - Install Piiano Vault - step 1 & 2 on [get-started](https://piiano.com/docs/guides/get-started)
-- Create collection for user's sensitive data
+- Create collection for customer's sensitive data
 ```
 pvault collection add --collection-pvschema "
-users PERSONS (
+customers PERSONS (
   name NAME,
   phone_number PHONE_NUMBER
 )"

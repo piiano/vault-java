@@ -1,7 +1,7 @@
 package com.demo.app.controller;
 
-import com.demo.app.dal.User;
-import com.demo.app.service.UserService;
+import com.demo.app.dal.Customer;
+import com.demo.app.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,46 +16,46 @@ import java.util.List;
 public class MainController {
 
     @Autowired
-    private UserService userService;
+    private CustomerService customerService;
 
     @GetMapping(path="/all")
-    public @ResponseBody Iterable<User> getAllUsers() {
-        return userService.getAllUsers();
+    public @ResponseBody Iterable<Customer> getAllCustomers() {
+        return customerService.getAllCustomers();
     }
 
-    @GetMapping(path="/add-user")
-    public @ResponseBody String addUser(User user) {
+    @GetMapping(path="/add-customer")
+    public @ResponseBody String addCustomer(Customer customer) {
 
-        userService.addUser(user);
+        customerService.addCustomer(customer);
         return "Saved";
     }
 
-    @GetMapping(path="/update-user")
-    public @ResponseBody String updateUser(User user) {
+    @GetMapping(path="/update-customer")
+    public @ResponseBody String updateCustomer(Customer customer) {
 
-        if (userService.updateUser(user)) {
+        if (customerService.updateCustomer(customer)) {
             return "Updated";
         }
         return "Not Found";
     }
 
-    @GetMapping(path="/delete-user")
-    public @ResponseBody String deleteUser(@RequestParam Integer id) {
-        if (userService.deleteUser(id)) {
+    @GetMapping(path="/delete-customer")
+    public @ResponseBody String deleteCustomer(@RequestParam Integer id) {
+        if (customerService.deleteCustomer(id)) {
             return "Deleted";
         }
         return "Not Found";
     }
 
-    @GetMapping(path="/find-user-by-name")
-    public @ResponseBody List<User> findUserByName(@RequestParam String name) {
+    @GetMapping(path="/find-customer-by-name")
+    public @ResponseBody List<Customer> findCustomerByName(@RequestParam String name) {
 
-        return userService.findUserByName(name);
+        return customerService.findCustomerByName(name);
     }
 
-    @GetMapping(path="/find-user-by-phone-number")
-    public @ResponseBody List<User> findUserByPhoneNumber(@RequestParam(name = "phone_number") String phoneNumber) {
+    @GetMapping(path="/find-customer-by-phone-number")
+    public @ResponseBody List<Customer> findCustomerByPhoneNumber(@RequestParam(name = "phone_number") String phoneNumber) {
 
-        return userService.findUserByPhoneNumber(phoneNumber);
+        return customerService.findCustomerByPhoneNumber(phoneNumber);
     }
 }

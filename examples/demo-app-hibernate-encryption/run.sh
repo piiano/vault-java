@@ -61,17 +61,17 @@ function mysql_cmd()
 	docker run -it --rm mysql mysql -h${DOCKER_LOCALHOST} -P${MYSQL_PORT} ${DB} ${U} ${P} -e "${CMD}"
 }
 
-function add_user()
+function add_customer()
 {
   name=$1
   phone_number=$2
 	country=$3
 	external_id=$4
 
-	printf "Adding user ${name} with phone number ${phone_number} ... "
-	curl -s "${BASE_URL}/add-user?name=${name}&phoneNumber=${phone_number}&country=${country}&externalId=${external_id}"
+	printf "Adding customer ${name} with phone number ${phone_number} ... "
+	curl -s "${BASE_URL}/add-customer?name=${name}&phoneNumber=${phone_number}&country=${country}&externalId=${external_id}"
 	if [ $? != 0 ] ; then
-		echo "Failed adding user"
+		echo "Failed adding customer"
 	else
 		echo
 	fi
@@ -166,9 +166,9 @@ do
     sleep 1
 done
 
-debug "Adding new collection 'users' with name and phone_number property"
+debug "Adding new collection 'customers' with name and phone_number property"
 ${PVAULT_CLI} collection add --collection-pvschema "
-users PERSONS (
+customers PERSONS (
   name NAME,
   phone_number PHONE_NUMBER
 )"
@@ -184,31 +184,29 @@ do
     sleep 5
 done
 
-# Add some users
-debug "Adding users..."
-add_user john    123-11111    us    10
-add_user john    123-22222    us    20
-add_user alice	 123-33333    us    30
-add_user bob		 123-44444    us    40
+# Add some customers
+debug "Adding customers..."
+add_customer john    123-11111    us
+add_customer john    123-22222    us
+add_customer alice	 123-33333    us
+add_customer bob		 123-44444    us
 
-# Search user by name=john
-debug "Search user by name=john --> expecting 2 results:"
-curl -s "${BASE_URL}/find-user-by-name?name=john" | ${JQ}
+# Search customer by name=john
+debug "Search customer by name=john --> expecting 2 results:"
+curl -s "${BASE_URL}/find-customer-by-name?name=john" | ${JQ}
 if [ $? != 0 ] ; then
-	echo "Failed find user by name"
+	echo "Failed find customer by name"
 fi
 
-# Get all users
-debug "Get all users --> Expecting 4 results:"
+# Get all customers
+debug "Get all customers --> Expecting 4 results:"
 curl -s "${BASE_URL}/all" | ${JQ}
 if [ $? != 0 ] ; then
-	echo "Failed get all users"
+	echo "Failed get all customers"
 fi
 
 # Show mysql encrypted data
 debug "Showing encrypted data in mysql (note the 'name' and 'phone_number' columns)"
-mysql_cmd false 'select * from users;'
+mysql_cmd false 'select * from customers;'
 
 stop_all
-
-echo
