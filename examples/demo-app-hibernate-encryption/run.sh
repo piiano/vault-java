@@ -86,7 +86,7 @@ function usage_and_exit()
 function stop_all()
 {
 	echo "stop pvault"
-	docker rm -f pvault-db pvault-server pvault-dev
+	docker rm -f pvault-dev
 	echo "stop mysql"
 	docker rm -f mysql
 	if [[ $(jobs -p) ]]; then
@@ -156,13 +156,8 @@ mysql_cmd true "create database app_db; create user '${MYSQL_USER}'@'%' identifi
 
 # start vault
 debug "starting vault"
-docker run --rm -p ${PSQL_PORT}:5432 --name pvault-db -e POSTGRES_DB=pvault -e POSTGRES_USER=pvault \
-		-e POSTGRES_PASSWORD=pvault -d postgres:14.5
-
-until docker exec pvault-db psql -U pvault > /dev/null 2>&1 ; do echo "waiting for PSQL"; sleep 1; done
-
-docker run --rm --name pvault-server -p ${PVAULT_PORT}:8123 -ePVAULT_DB_PORT=${PSQL_PORT} -e PVAULT_DB_HOSTNAME=${DOCKER_LOCALHOST} \
-	-e PVAULT_DEVMODE=true -e PVAULT_SERVICE_LICENSE=${PVAULT_SERVICE_LICENSE} -d piiano/pvault-server:${DOCKER_TAG}
+docker run --rm --name pvault-dev -p ${PVAULT_PORT}:8123 -e PVAULT_DB_PORT=${PSQL_PORT} -e PVAULT_DB_HOSTNAME=${DOCKER_LOCALHOST} \
+	-e PVAULT_DEVMODE=true -e PVAULT_SERVICE_LICENSE=${PVAULT_SERVICE_LICENSE} -d piiano/pvault-dev:${DOCKER_TAG}
 
 # check for Vault version to ensure it is up - TBD
 until ${PVAULT_CLI} version > /dev/null 2>&1
