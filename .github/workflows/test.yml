@@ -12,13 +12,17 @@ jobs:
         - name: Install java
           uses: actions/setup-java@v3
           with:
-            java-version: '19'
+            java-version: '8'
             distribution: 'zulu'
             cache: maven
 
         - name: Build all
           run: |
-              make all
+            ls -la
+            cd ..
+            ls -la
+            cd sdk
+            make all
           working-directory: sdk
 
         - name: Test openapi
