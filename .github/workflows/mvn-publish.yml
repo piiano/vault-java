@@ -32,7 +32,7 @@ jobs:
             # Updating version of client
             source VERSION
             cd sdk/client
-            sed -i "s/    <version>$MAVEN_VERSION-SNAPSHOT<\/version>/    <version>${{ inputs.maven_version }}-SNAPSHOT<\/version>/g" pom.xml
+            sed -i "s/<version>$MAVEN_VERSION-SNAPSHOT<\/version>/<version>${{ inputs.maven_version }}-SNAPSHOT<\/version>/g" pom.xml
 
         - name: Update VERSION file
           run: |
@@ -43,7 +43,7 @@ jobs:
             git config --global user.email "cicd@piiano.com"
             git config --global user.name "Github Actions"
             git add .
-            git commit -m "update versions"
+            git commit -m "Update client maven version to ${{ inputs.maven_version }}"
             git push
 
         - name: Build and publish client
