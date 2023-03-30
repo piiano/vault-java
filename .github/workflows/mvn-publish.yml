@@ -36,7 +36,7 @@ jobs:
 
         - name: Update VERSION file
           run: |
-            echo -e "VAULT_VERSION=${{ inputs.vault_version }}\nMAVEN_VERSION=${{ inputs.maven_version }}" > VERSION 
+            echo -e 'VAULT_VERSION="${{ inputs.vault_version }}"\nMAVEN_VERSION="${{ inputs.maven_version }}"' > VERSION 
 
         - name: Commit change and push
           run: |
