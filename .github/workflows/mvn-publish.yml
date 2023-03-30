@@ -1,0 +1,80 @@
+name: Publish to maven
+on:
+  workflow_dispatch:
+    inputs:
+      pom_version:
+        description: 'Pom version to release'
+        required: true
+      vault_version:
+        description: 'Vault version to release'
+        required: true
+
+jobs:
+    build-n-publish:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+
+        - name: Install java
+          uses: actions/setup-java@v3
+          with:
+            java-version: '19'
+            distribution: 'zulu'
+            cache: maven
+        
+        - name: Update version of examples
+          run: |
+            # Change pom version for snapshot
+            sed -i 's/<piiano-vault.version>.*/<piiano-vault.version>${{ inputs.pom_version }}-SNAPSHOT<\/piiano-vault.version>/' pom.xml
+            # Change vault version in run.sh
+            sed -i 's/DOCKER_TAG=.*/DOCKER_TAG=${{ inputs.vault_version }}/g' run.sh
+          working-directory: examples/demo-app-hibernate-encryption
+
+        - name: Update version of sdk
+          run: |
+            # Updating version of client
+            cd sdk/client
+            sed -i 's/<project.version>.*/<project.version>${{ inputs.vault_version }}-SNAPSHOT<\/project.version>/' pom.xml
+            cd -
+            
+            # Updating version of hibernate-encryption
+            cd sdk/hibernate-encryption
+            sed -i 's/<project.version>.*/<project.version>${{ inputs.vault_version }}-SNAPSHOT<\/project.version>/' pom.xml
+            # Note, changing line 8 specifically.
+            sed -i '8s/.*/	<version>${{ inputs.vault_version }}-SNAPSHOT<\/version>/' pom.xml
+
+        - name: Build and publish client
+          if : success()
+          run: |
+            mvn build
+            mvn deploy
+          working-directory: sdk/client
+
+        - name: Build and publish hibernate-encryption
+          if: success()
+          run: |
+            mvn build
+            mvn deploy
+          working-directory: sdk/hibernate-encryption
+
+        - name: Build and publish demo-app-hibernate-encryption
+          if: success()
+          run: |
+            mvn build
+            mvn deploy
+          working-directory: examples/demo-app-hibernate-encryption
+
+        - name: Commit change and push
+          run: |
+            git config --global user.email "cicd@piiano.com"
+            git config --global user.name "Github Actions"
+            git add .
+            git status
+            git commit -m "update version to ${{ inputs.version }}"
+            git push
+
+        - name: Run demo-app-hibernate-encryption
+          run: |
+            PVAULT_SERVICE_LICENSE=${{ secrets.PVAULT_SERVICE_LICENSE }} /bin/bash run.sh
+          working-directory: examples/demo-app-hibernate-encryption
