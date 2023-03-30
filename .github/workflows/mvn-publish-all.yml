@@ -11,7 +11,7 @@ on:
 
 jobs:
   publish-client:
-    uses: ./.github/workflows/mvn-publish-client.yml
+    uses: piiano/vault-java/.github/workflows/mvn-publish-client.yml@main
     inputs:
       maven_version: ${{ inputs.maven_version }}
       vault_version: ${{ inputs.vault_version }}
@@ -20,7 +20,7 @@ jobs:
       OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
 
   publish-hibernate-encryption:
-    uses: ./.github/workflows/mvn-publish-hibernate-encryption.yml
+    uses: piiano/vault-java/.github/workflows/mvn-publish-hibernate-encryption.yml@main
     inputs:
       maven_version: ${{ inputs.maven_version }}
       vault_version: ${{ inputs.vault_version }}
