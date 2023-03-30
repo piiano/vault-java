@@ -16,18 +16,18 @@ Safely store sensitive personal data in your own cloud environment with automate
 
 # Vault-java
 
-This repository contains SDKs for [Piiano Vault](https://piiano.com/).  
-The first SDK included is for ** TBD FILL HERE *, allowing to easily and transparently encrypt data in your app's DB. 
+The code in this repository contains source code for Vault Java packages and examples of use:
 
-The repository also contains examples for the included SDKs.
+1. [Vault Java sdk](./sdk) to connect to the Vault.
+1. [Vault Java Hibernate example](./examples/demo-app-hibernate-encryption) - runnable example to demonstrate usage of the SDK.
 
 # About Piiano Vault
 
-Piiano Vault is the secure home for sensitive personal data. It allows you to safely store sensitive personal data in your own cloud environment with automated compliance controls.  
+Piiano Vault is the secure home for sensitive personal data. It allows you to safely store sensitive personal data in your own cloud environment with automated compliance controls.
 
 Vault is deployed within your own architecture, next to other DBs used by the applications, and should be used to store the most critical sensitive personal data, such as credit cards and bank account numbers, names, emails, national IDs (e.g. SSN), phone numbers, etc.
 
-The main benefits are:  
+The main benefits are:
 
 - Field level encryption, including key rotation.
 - Searchability is allowed over the encrypted data.
