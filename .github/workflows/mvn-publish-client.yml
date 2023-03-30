@@ -3,9 +3,11 @@ on:
   workflow_call:
     inputs:
       maven_version:
+        type: string
         description: 'Maven version to release'
         required: true
       vault_version:
+        type: string
         description: 'Vault version to release'
         required: true
     secrets:
@@ -26,76 +28,60 @@ on:
         required: true
 
 jobs:
-    build-n-publish:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-        - name: Checkout repo
-          uses: actions/setup-java@v3
-          with:
-            java-version: '19'
-            distribution: 'zulu'
-            cache: maven
-            server-id: ossrh
-            server-username: MAVEN_USERNAME
-            server-password: MAVEN_PASSWORD
+  build-n-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/setup-java@v3
+        with:
+          java-version: '19'
+          distribution: 'zulu'
+          cache: maven
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
 
-#        - name: Generate openapi
-#          run: |
-#            cd sdk
-#            # update the generator config file with the required version
-#            sed -i "s/$MAVEN_VERSION-SNAPSHOT/${{ inputs.maven_version }}-SNAPSHOT/g" config.yaml
-#            make generate-openapi
-#
-#        - name: Build and publish openapi
-#          if: success()
-#          run: |
-#            cd sdk/openapi
-#            mvn --batch-mode deploy -DskipTests
-#          env:
-#            MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-#            MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+      - name: Update version of client
+        run: |
+          # Updating version of client pom.xml
+          source VERSION
+          cd sdk/client
+          sed -i "s/<version>$MAVEN_VERSION-SNAPSHOT<\/version>/<version>${{ inputs.maven_version }}-SNAPSHOT<\/version>/g" pom.xml
 
-        - name: Update version of client
-          run: |
-            # Updating version of client pom.xml
-            source VERSION
-            cd sdk/client
-            sed -i "s/<version>$MAVEN_VERSION-SNAPSHOT<\/version>/<version>${{ inputs.maven_version }}-SNAPSHOT<\/version>/g" pom.xml
+      - name: Build and publish client
+        if : success()
+        run: |
+          cd sdk/client
+          mvn --batch-mode deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
-        - name: Build and publish client
-          if : success()
-          run: |
-            cd sdk/client
-            mvn --batch-mode deploy -DskipTests
-          env:
-            MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-            MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+      - name: Update version of hibernate-encryption
+        run: |
+          # Updating version of hibernate-encryption pom.xml
+          source VERSION
+          cd sdk/hibernate-encryption
+          sed -i "s/<version>$MAVEN_VERSION-SNAPSHOT<\/version>/<version>${{ inputs.maven_version }}-SNAPSHOT<\/version>/g" pom.xml
 
-        - name: Update version of hibernate-encryption
-          run: |
-            # Updating version of hibernate-encryption pom.xml
-            source VERSION
-            cd sdk/hibernate-encryption
-            sed -i "s/<version>$MAVEN_VERSION-SNAPSHOT<\/version>/<version>${{ inputs.maven_version }}-SNAPSHOT<\/version>/g" pom.xml
+      - name: Build and publish hibernate-encryption
+        if: success()
+        run: |
+          cd sdk/hibernate-encryption
+          mvn --batch-mode deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
-        - name: Build and publish hibernate-encryption
-          if: success()
-          run: |
-            cd sdk/hibernate-encryption
-            mvn --batch-mode deploy -DskipTests
-          env:
-            MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-            MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+      - name: Update VERSION file
+        run: |
+          echo -e 'VAULT_VERSION="${{ inputs.vault_version }}"\nMAVEN_VERSION="${{ inputs.maven_version }}"' > VERSION 
 
-        - name: Update VERSION file
-          run: |
-            echo -e 'VAULT_VERSION="${{ inputs.vault_version }}"\nMAVEN_VERSION="${{ inputs.maven_version }}"' > VERSION 
-
-        - name: Commit change and push
-          run: |
-            git config --global user.email "cicd@piiano.com"
-            git config --global user.name "Github Actions"
-            git add sdk/client/pom.xml VERSION
-            git commit -m "Update client maven version to ${{ inputs.maven_version }}"
-            git push
+      - name: Commit change and push
+        run: |
+          git config --global user.email "cicd@piiano.com"
+          git config --global user.name "Github Actions"
+          git add sdk/client/pom.xml VERSION
+          git commit -m "Update client maven version to ${{ inputs.maven_version }}"
+          git push
