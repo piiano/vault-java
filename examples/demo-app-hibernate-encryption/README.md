@@ -25,7 +25,8 @@ This level of integration is suitable for applications that are using ORM to acc
 
 ## Compiling the application
 
-Run: `mvn clean install -DskipTests`
+Run: `mvn clean install -DskipTests`  
+To run it with tests: `mvn clean install`
 
 ## Running the application
 
