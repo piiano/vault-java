@@ -53,9 +53,9 @@ public class MainController {
         return customerService.findCustomerByName(name);
     }
 
-    @GetMapping(path="/find-customer-by-phone-number")
-    public @ResponseBody List<Customer> findCustomerByPhoneNumber(@RequestParam(name = "phone_number") String phoneNumber) {
+    @GetMapping(path="/find-customer-by-phone")
+    public @ResponseBody List<Customer> findCustomerByPhone(@RequestParam(name = "phone") String phone) {
 
-        return customerService.findCustomerByPhoneNumber(phoneNumber);
+        return customerService.findCustomerByPhone(phone);
     }
 }

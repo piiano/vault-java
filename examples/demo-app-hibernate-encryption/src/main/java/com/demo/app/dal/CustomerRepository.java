@@ -8,5 +8,5 @@ public interface CustomerRepository extends CrudRepository<Customer, Integer> {
 
     List<Customer> findCustomerByName(String name);
 
-    List<Customer> findCustomerByPhoneNumber(String phoneNumber);
+    List<Customer> findCustomerByPhone(String phone);
 }

@@ -88,17 +88,17 @@ class CustomerServiceTest {
     }
 
     @Test
-    public void testFindCustomersByPhoneNumber() {
+    public void testFindCustomersByPhone() {
 
         List<Customer> customers = Lists.newArrayList(getCustomers());
         customers.add(getCustomer());
 
-        String phoneNumber = "+12345678";
+        String phone = "+12345678";
         for (int i = 0; i < customers.size(); i++) {
             if (i == 0) {
                 continue;
             }
-            customers.get(i).setPhoneNumber(phoneNumber);
+            customers.get(i).setPhone(phone);
         }
 
         customers.forEach(u -> customerService.addCustomer(u));
@@ -109,7 +109,7 @@ class CustomerServiceTest {
 
         assertEquals(4, customerIds.size());
 
-        List<Customer> personNamedJohn = customerService.findCustomerByPhoneNumber(phoneNumber);
+        List<Customer> personNamedJohn = customerService.findCustomerByPhone(phone);
         assertEquals(3, personNamedJohn.size());
 
         // Cleanup.
@@ -167,8 +167,8 @@ class CustomerServiceTest {
     private static Customer getCustomer() {
         Customer customer = new Customer();
         customer.setName("John");
-        customer.setPhoneNumber("+8-888-88888");
-        customer.setCountry("USA");
+        customer.setPhone("+8-888-88888");
+        customer.setState("CA");
         return customer;
     }
 
@@ -177,13 +177,13 @@ class CustomerServiceTest {
 
         Customer customer2 = new Customer();
         customer2.setName("Alice");
-        customer2.setPhoneNumber("+11111111");
-        customer2.setCountry("Brazil");
+        customer2.setPhone("+11111111");
+        customer2.setState("NY");
 
         Customer customer3 = new Customer();
         customer3.setName("Bob");
-        customer3.setPhoneNumber("+22222222");
-        customer3.setCountry("Australia");
+        customer3.setPhone("+22222222");
+        customer3.setState("AZ");
 
         return ImmutableList.of(customer1, customer2, customer3);
     }

@@ -55,7 +55,7 @@ grant all on app_db.* to 'springuser'@'%';
 pvault collection add --collection-pvschema "
 customers PERSONS (
   name NAME,
-  phone_number PHONE_NUMBER
+  phone PHONE_NUMBER
 )"
 ```
 

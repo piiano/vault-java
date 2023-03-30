@@ -26,7 +26,8 @@ public class Encryptor {
 	}
 
 	public boolean isEncrypted(String propValue) {
-		return propValue.startsWith(PREFIX_ENCRYPTED);
+		return propValue != null
+				&& propValue.startsWith(PREFIX_ENCRYPTED);
 	}
 
 	public String encrypt(EncryptionType encryptionType, String collectionName, String propertyName, String propValue) throws ApiException {
@@ -44,6 +45,10 @@ public class Encryptor {
 	}
 
 	public Object decrypt(String collectionName, String propertyName, String ciphertext) throws ApiException {
+
+		if (ciphertext == null) {
+			throw new ApiException("ciphertext must not be null");
+		}
 
 		if (isEncrypted(ciphertext)) {
 			ciphertext = ciphertext.substring(PREFIX_ENCRYPTED.length());

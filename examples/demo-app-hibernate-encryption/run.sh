@@ -17,7 +17,6 @@ DOCKER_LOCALHOST=${DOCKER_LOCALHOST:-host.docker.internal} # or use 172.17.0.1
 # Vault
 DOCKER_TAG="1.2.2"
 export PVAULT_PORT=${PVAULT_PORT:-8123}
-PSQL_PORT=${PSQL_PORT:-5432}
 PVAULT_CLI="docker run --rm -i -v $(pwd):/pwd -w /pwd -e PVAULT_ADDR=http://${DOCKER_LOCALHOST}:${PVAULT_PORT} piiano/pvault-cli:${DOCKER_TAG}"
 
 # Run as root and also wait allow for time until mysql is up
@@ -64,12 +63,14 @@ function mysql_cmd()
 function add_customer()
 {
   name=$1
-  phone_number=$2
-	country=$3
-	external_id=$4
+  email=$2
+  phone=$3
+	ssn=$4
+	dob=$5
+	state=$6
 
-	printf "Adding customer ${name} with phone number ${phone_number} ... "
-	curl -s "${BASE_URL}/add-customer?name=${name}&phoneNumber=${phone_number}&country=${country}&externalId=${external_id}"
+	printf "Adding customer ${name} with email ${email} and with phone ${phone} ... "
+	curl -s "${BASE_URL}/add-customer?name=${name}&email=${email}&phone=${phone}&ssn=${ssn}&dob=${dob}&state=${state}"
 	if [ $? != 0 ] ; then
 		echo "Failed adding customer"
 	else
@@ -156,8 +157,8 @@ mysql_cmd true "create database app_db; create user '${MYSQL_USER}'@'%' identifi
 
 # start vault
 debug "starting vault"
-docker run --rm --name pvault-dev -p ${PVAULT_PORT}:8123 -e PVAULT_DB_PORT=${PSQL_PORT} -e PVAULT_DB_HOSTNAME=${DOCKER_LOCALHOST} \
-	-e PVAULT_DEVMODE=true -e PVAULT_SERVICE_LICENSE=${PVAULT_SERVICE_LICENSE} -d piiano/pvault-dev:${DOCKER_TAG}
+docker run --rm --name pvault-dev -p ${PVAULT_PORT}:8123 \
+	-e PVAULT_SERVICE_LICENSE=${PVAULT_SERVICE_LICENSE} -d piiano/pvault-dev:${DOCKER_TAG}
 
 # check for Vault version to ensure it is up - TBD
 until ${PVAULT_CLI} version > /dev/null 2>&1
@@ -166,11 +167,14 @@ do
     sleep 1
 done
 
-debug "Adding new collection 'customers' with name and phone_number property"
+debug "Adding new collection 'customers' with name and phone property"
 ${PVAULT_CLI} collection add --collection-pvschema "
 customers PERSONS (
-  name NAME,
-  phone_number PHONE_NUMBER
+  name  NAME,
+  email EMAIL,
+  phone PHONE_NUMBER,
+  ssn   SSN,
+  dob   STRING
 )"
 
 # run the app
@@ -186,10 +190,10 @@ done
 
 # Add some customers
 debug "Adding customers..."
-add_customer john    123-11111    us
-add_customer john    123-22222    us
-add_customer alice	 123-33333    us
-add_customer bob		 123-44444    us
+add_customer john   john@exmaple.com    123-11111   853-11-9898   1989-08-08  AZ
+add_customer john   john2@exmaple.com   123-22222   454-21-4355   1975-02-10  NY
+add_customer alice  alice@exmaple.com   123-33333   383-83-6464   1999-09-09  CA
+add_customer bob		bob@exmaple.com     123-44444   978-35-2138   1982-06-10  FL
 
 # Search customer by name=john
 debug "Search customer by name=john --> expecting 2 results:"
@@ -206,7 +210,7 @@ if [ $? != 0 ] ; then
 fi
 
 # Show mysql encrypted data
-debug "Showing encrypted data in mysql (note the 'name' and 'phone_number' columns)"
+debug "Showing encrypted data in mysql (note all columns are encrypted except the 'state' columns)"
 mysql_cmd false 'select * from customers;'
 
 stop_all

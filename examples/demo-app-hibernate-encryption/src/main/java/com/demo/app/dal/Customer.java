@@ -28,19 +28,31 @@ public class Customer {
     @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "name")})
     private String name;
 
-    @Column(name = "phone_number")
-    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "phone_number")})
-    private String phoneNumber;
+    @Column(name = "email")
+    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "email")})
+    private String email;
 
-    @Column(name = "masked_phone_number")
-    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "phone_number.mask")})
-    private String maskedPhoneNumber;
+    @Column(name = "phone")
+    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "phone")})
+    private String phone;
 
-    @Column(name = "country")
-    private String country;
+    @Column(name = "ssn")
+    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "ssn")})
+    private String ssn;
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-        this.maskedPhoneNumber = phoneNumber;
+    @Column(name = "ssn_masked")
+    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "ssn.mask")})
+    private String ssnMasked;
+
+    @Column(name = "dob")
+    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "dob")})
+    private String dob;
+
+    @Column(name = "state")
+    private String state;
+
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
+        this.ssnMasked = ssn;
     }
 }

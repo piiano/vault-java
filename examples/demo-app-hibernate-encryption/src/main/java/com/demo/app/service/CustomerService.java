@@ -46,7 +46,7 @@ public class CustomerService {
         return customerRepository.findCustomerByName(name);
     }
 
-    public List<Customer> findCustomerByPhoneNumber(String phoneNumber) {
-        return customerRepository.findCustomerByPhoneNumber(phoneNumber);
+    public List<Customer> findCustomerByPhone(String phone) {
+        return customerRepository.findCustomerByPhone(phone);
     }
 }

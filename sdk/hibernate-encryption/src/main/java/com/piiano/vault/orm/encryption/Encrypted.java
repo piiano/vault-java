@@ -93,10 +93,6 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
 
-		if (rs.wasNull()) {
-			return null;
-		}
-
 		try {
 			String value = rs.getString(names[0]);
 			if (encryptor.isEncrypted(value)) {
@@ -112,14 +108,16 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
 
-		try {
-			String propValue = null;
-			if (value != null) {
-				propValue = value.toString();
+		if (value == null) {
+			st.setNull(index, Types.VARCHAR);
+			return;
+		}
 
-				if (!encryptor.isEncrypted(propValue)) {
-					propValue = encryptor.encrypt(encryptionType, collectionName, propertyName, propValue);
-				}
+		try {
+			String propValue = value.toString();
+
+			if (propValue != null && !encryptor.isEncrypted(propValue)) {
+				propValue = encryptor.encrypt(encryptionType, collectionName, propertyName, propValue);
 			}
 
 			st.setString(index, propValue);

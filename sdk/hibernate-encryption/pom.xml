@@ -36,18 +36,17 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.6.9.Final</version>
+			<version>${hibernate-core.version}</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
 	<properties>
-		<project.version>1.2.2-SNAPSHOT</project.version>
-
 		<java.version>8</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
+		<hibernate-core.version>5.6.9.Final</hibernate-core.version>
 		<junit.version>4.13.2</junit.version>
 		<junit-jupiter-api.version>5.9.2</junit-jupiter-api.version>
 		<lombok.version>1.18.26</lombok.version>

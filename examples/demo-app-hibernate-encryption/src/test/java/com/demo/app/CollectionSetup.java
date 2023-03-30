@@ -51,7 +51,7 @@ public class CollectionSetup {
                         new Property().name("name").dataTypeName("NAME").description("Name")
                                 .isEncrypted(true)
                 ).addPropertiesItem(
-                        new Property().name("phone_number").dataTypeName("PHONE_NUMBER").description("Phone number")
+                        new Property().name("phone").dataTypeName("PHONE_NUMBER").description("Phone")
                                 .isEncrypted(true).isNullable(true)
                 );
     }
