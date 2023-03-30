@@ -1,0 +1,85 @@
+name: Publish Client to maven
+on:
+  workflow_call:
+    inputs:
+      maven_version:
+        description: 'Maven version to release'
+        required: true
+      vault_version:
+        description: 'Vault version to release'
+        required: true
+    secrets:
+      OSSRH_USERNAME:
+        description: 'OSSRH Username'
+        required: true
+      OSSRH_TOKEN:
+        description: 'OSSRH Token'
+        required: true
+
+  workflow_dispatch:
+    inputs:
+      maven_version:
+        description: 'Maven version to release'
+        required: true
+      vault_version:
+        description: 'Vault version to release'
+        required: true
+
+jobs:
+    build-n-publish:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Checkout repo
+          uses: actions/setup-java@v3
+          with:
+            java-version: '19'
+            distribution: 'zulu'
+            cache: maven
+            server-id: ossrh
+            server-username: MAVEN_USERNAME
+            server-password: MAVEN_PASSWORD
+
+        - name: Update version of client
+          run: |
+            # Updating version of client pom
+            source VERSION
+            cd sdk/client
+            sed -i "s/<version>$MAVEN_VERSION-SNAPSHOT<\/version>/<version>${{ inputs.maven_version }}-SNAPSHOT<\/version>/g" pom.xml
+            cd -
+            
+            # updating the version of openapi pom
+            # So both client and openapi are matching
+            cd sdk
+            sed -i "s/$MAVEN_VERSION-SNAPSHOT/${{ inputs.maven_version }}-SNAPSHOT/g" config.yaml
+            make generate-openapi
+
+        - name: Update VERSION file
+          run: |
+            echo -e 'VAULT_VERSION="${{ inputs.vault_version }}"\nMAVEN_VERSION="${{ inputs.maven_version }}"' > VERSION 
+
+        - name: Build and publish openapi
+          if: success()
+          run: |
+            cd sdk/openapi
+            mvn --batch-mode deploy -DskipTests
+          env:
+            MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+            MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+
+        - name: Build and publish client
+          if : success()
+          run: |
+            cd sdk/client
+            mvn --batch-mode deploy -DskipTests
+          env:
+            MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+            MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+
+        - name: Commit change and push
+          run: |
+            git config --global user.email "cicd@piiano.com"
+            git config --global user.name "Github Actions"
+            git add sdk/client/pom.xml VERSION
+            git commit -m "Update client maven version to ${{ inputs.maven_version }}"
+            git push

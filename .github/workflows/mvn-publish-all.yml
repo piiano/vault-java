@@ -1,0 +1,29 @@
+name: Publish All to maven
+on:
+  workflow_dispatch:
+    inputs:
+      maven_version:
+        description: 'Maven version to release'
+        required: true
+      vault_version:
+        description: 'Vault version to release'
+        required: true
+
+jobs:
+  publish-client:
+    uses: piiano/vault-java/.github/workflows/mvn-publish-client.yml@main
+    inputs:
+      maven_version: ${{ inputs.maven_version }}
+      vault_version: ${{ inputs.vault_version }}
+    secrets:
+      OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+      OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+
+  publish-hibernate-encryption:
+    uses: piiano/vault-java/.github/workflows/mvn-publish-hibernate-encryption.yml@main
+    inputs:
+      maven_version: ${{ inputs.maven_version }}
+      vault_version: ${{ inputs.vault_version }}
+    secrets:
+      OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+      OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}

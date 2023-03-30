@@ -1,0 +1,37 @@
+name: Test all
+on:
+  push:
+
+jobs:
+  test-client:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+
+        - name: Install java
+          uses: actions/setup-java@v3
+          with:
+            java-version: '19'
+            distribution: 'zulu'
+            cache: maven
+
+        - name: Build all
+          run: |
+              make all
+          working-directory: sdk
+
+        - name: Test openapi
+          run: |
+            make test-openapi
+          working-directory: sdk
+
+        - name: Test client
+          run: |
+              make test-client
+          working-directory: sdk
+
+        - name: Test hibernate-encryption
+          run: |
+              make test-hibernate
+          working-directory: sdk
