@@ -193,7 +193,7 @@ debug "Adding customers..."
 add_customer john   john@exmaple.com    123-11111   853-11-9898   1989-08-08  AZ
 add_customer john   john2@exmaple.com   123-22222   454-21-4355   1975-02-10  NY
 add_customer alice  alice@exmaple.com   123-33333   383-83-6464   1999-09-09  CA
-add_customer bob		bob@exmaple.com     123-44444   978-35-2138   1982-06-10  FL
+add_customer bob	bob@exmaple.com     123-44444   978-35-2138   1982-06-10  FL
 
 # Search customer by name=john
 debug "Search customer by name=john --> expecting 2 results:"
@@ -211,6 +211,6 @@ fi
 
 # Show mysql encrypted data
 debug "Showing encrypted data in mysql (note all columns are encrypted except the 'state' columns)"
-mysql_cmd false 'select * from customers;'
+mysql_cmd false 'select * from customers where id=1\G'
 
 stop_all
