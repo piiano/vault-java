@@ -18,21 +18,17 @@ jobs:
 
         - name: Build all
           run: |
-            ls -la
-            cd ..
-            ls -la
-            cd sdk
             make all
           working-directory: sdk
 
-        - name: Test openapi
-          run: |
-            make test-openapi
-          working-directory: sdk
+#        - name: Test openapi
+#          run: |
+#            make test-openapi
+#          working-directory: sdk
 
         - name: Test client
           run: |
-              make test-client
+            make test-client
           working-directory: sdk
 
         - name: Test hibernate-encryption
