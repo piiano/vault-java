@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>com.piiano.vault</groupId>
 			<artifactId>openapi</artifactId>
-			<version>${pvault.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -202,8 +202,6 @@
 	</build>
 
 	<properties>
-		<pvault.version>1.2.2-SNAPSHOT</pvault.version>
-
 		<java.version>8</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>

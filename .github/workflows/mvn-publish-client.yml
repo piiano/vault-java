@@ -51,13 +51,30 @@ jobs:
             # updating the version of openapi pom
             # So both client and openapi are matching
             cd sdk
+            sed -i "s/$MAVEN_VERSION-SNAPSHOT/${{ inputs.maven_version }}-SNAPSHOT/g" config.yaml
             make generate-openapi
-            cd openapi
-            sed -i "s/<version>$MAVEN_VERSION-SNAPSHOT<\/version>/<version>${{ inputs.maven_version }}-SNAPSHOT<\/version>/g" pom.xml
 
         - name: Update VERSION file
           run: |
             echo -e 'VAULT_VERSION="${{ inputs.vault_version }}"\nMAVEN_VERSION="${{ inputs.maven_version }}"' > VERSION 
+
+        - name: Build and publish openapi
+          if: success()
+          run: |
+            cd sdk/openapi
+            mvn --batch-mode deploy -DskipTests
+          env:
+            MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+            MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+
+        - name: Build and publish client
+          if : success()
+          run: |
+            cd sdk/client
+            mvn --batch-mode deploy -DskipTests
+          env:
+            MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+            MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
         - name: Commit change and push
           run: |
@@ -66,21 +83,3 @@ jobs:
             git add sdk/client/pom.xml VERSION
             git commit -m "Update client maven version to ${{ inputs.maven_version }}"
             git push
-
-        - name: Build and publish client
-          if : success()
-          run: |
-            cd sdk/client
-            mvn --batch-mode deploy
-          env:
-            MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-            MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-
-        - name: Build and publish openapi
-          if: success()
-          run: |
-            cd sdk/openapi
-            mvn --batch-mode deploy
-          env:
-            MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-            MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
