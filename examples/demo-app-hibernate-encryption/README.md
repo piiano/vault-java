@@ -34,7 +34,7 @@ The demo application can be either run automatically by our provided script or m
 
 ### One liner application running
 
-Run locally using `./run.sh`.
+Run locally using `./run.sh`.  
 To enable interactive mode, run `./run.sh -i`. In this mode you will need to press `<enter>` after every action.
   
 ### Running the application manually
@@ -59,7 +59,7 @@ To enable interactive mode, run `./run.sh -i`. In this mode you will need to pre
       spring.datasource.password=userpass
     ```
 1. Install Piiano vault
-   1. Install Piiano Vault dokcer image as explained at [get-started](https://piiano.com/docs/guides/get-started).
+   1. Install Piiano Vault dokcer image by following the first step of the [get-started](https://piiano.com/docs/guides/get-started) guide.
    2. Create a collection for the customer's sensitive data
     ```
     pvault collection add --collection-pvschema "
@@ -71,4 +71,8 @@ To enable interactive mode, run `./run.sh -i`. In this mode you will need to pre
 1. Run the Piiano ORM Demo:
     ```
     java -jar ~/.m2/repository/com/piiano/example/demo-app-hibernate-encryption/0.0.1-SNAPSHOT/demo-app-hibernate-encryption-0.0.1-SNAPSHOT.jar
+    ```
+1. Add customers by calling the REST API and filling the details:
+    ```
+    http://localhost:8090/add-customer?name=${name}&email=${email}&phone=${phone}&ssn=${ssn}&dob=${dob}&state=${state}
     ```
