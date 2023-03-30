@@ -4,9 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.piiano.vault.client.CryptoClient;
 import com.piiano.vault.client.model.AccessReason;
-import com.piiano.vault.client.model.DecryptParams;
 import com.piiano.vault.client.model.DefaultParams;
-import com.piiano.vault.client.model.EncryptParams;
 import com.piiano.vault.client.openapi.ApiException;
 import com.piiano.vault.client.openapi.model.*;
 
@@ -20,9 +18,24 @@ public class Encryptor {
 
 	private final CryptoClient cryptoClient;
 
-	public Encryptor() {
+	private final EncryptionType encryptionType;
+	private String propertyName;
+	private String requestedProperty;
+
+	public Encryptor(EncryptionType encryptionType, String collection, String propertyName) {
+
 		cryptoClient = new CryptoClient(getPvaultClient(), DefaultParams.builder()
+				.collection(collection)
 				.accessReason(AccessReason.AppFunctionality).build());
+
+		this.encryptionType = encryptionType;
+
+		this.requestedProperty = propertyName;
+
+		this.propertyName = propertyName;
+		if (propertyName.indexOf(".") > 0) {
+			this.propertyName = propertyName.substring(0, propertyName.indexOf("."));
+		}
 	}
 
 	public boolean isEncrypted(String propValue) {
@@ -30,13 +43,13 @@ public class Encryptor {
 				&& propValue.startsWith(PREFIX_ENCRYPTED);
 	}
 
-	public String encrypt(EncryptionType encryptionType, String collectionName, String propertyName, String propValue) throws ApiException {
+	public String encrypt(String propValue) throws ApiException {
 
 		EncryptionRequest request = new EncryptionRequest()
-				.type(encryptionType)
-				._object(new InputObject().fields(ImmutableMap.of(propertyName, propValue)));
+				.type(this.encryptionType)
+				._object(new InputObject().fields(ImmutableMap.of(this.propertyName, propValue)));
 
-		EncryptedValue encrypted = cryptoClient.encrypt(request, EncryptParams.builder().collection(collectionName).build());
+		EncryptedValue encrypted = cryptoClient.encrypt(request);
 
 		if (encrypted != null) {
 			return PREFIX_ENCRYPTED + encrypted.getCiphertext();
@@ -44,7 +57,7 @@ public class Encryptor {
 		return null;
 	}
 
-	public Object decrypt(String collectionName, String propertyName, String ciphertext) throws ApiException {
+	public Object decrypt(String ciphertext) throws ApiException {
 
 		if (ciphertext == null) {
 			throw new ApiException("ciphertext must not be null");
@@ -55,13 +68,12 @@ public class Encryptor {
 		}
 
 		DecryptionRequest request = new DecryptionRequest().encryptedObject(
-				new EncryptedObjectInput().ciphertext(ciphertext)).props(ImmutableList.of(propertyName));
+				new EncryptedObjectInput().ciphertext(ciphertext)).props(ImmutableList.of(this.requestedProperty));
 
-		DecryptedObject decrypted = cryptoClient.decrypt(request, Collections.emptySet(),
-				DecryptParams.builder().collection(collectionName).build());
+		DecryptedObject decrypted = cryptoClient.decrypt(request, Collections.emptySet());
 
 		if (decrypted != null) {
-			return decrypted.getFields().get(propertyName);
+			return decrypted.getFields().get(this.requestedProperty);
 		}
 		return null;
 	}

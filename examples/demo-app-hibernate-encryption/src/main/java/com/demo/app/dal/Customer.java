@@ -25,27 +25,27 @@ public class Customer {
     private Integer id;
 
     @Column(name = "name")
-    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "name")})
+    @Type(type = "Encrypted", parameters = {@Parameter(name = PROPERTY, value = "name")})
     private String name;
 
     @Column(name = "email")
-    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "email")})
+    @Type(type = "Encrypted", parameters = {@Parameter(name = PROPERTY, value = "email")})
     private String email;
 
     @Column(name = "phone")
-    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "phone")})
+    @Type(type = "Encrypted", parameters = {@Parameter(name = PROPERTY, value = "phone")})
     private String phone;
 
     @Column(name = "ssn")
-    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "ssn")})
+    @Type(type = "Encrypted", parameters = {@Parameter(name = PROPERTY, value = "ssn")})
     private String ssn;
 
     @Column(name = "ssn_masked")
-    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "ssn.mask")})
+    @Type(type = "Encrypted", parameters = {@Parameter(name = PROPERTY, value = "ssn.mask")})
     private String ssnMasked;
 
     @Column(name = "dob")
-    @Type(type = "Encrypted", parameters = {@Parameter(name = TYPE, value = "deterministic"), @Parameter(name = COLLECTION, value = "customers"), @Parameter(name = PROPERTY, value = "dob")})
+    @Type(type = "Encrypted", parameters = {@Parameter(name = PROPERTY, value = "dob")})
     private String dob;
 
     @Column(name = "state")
