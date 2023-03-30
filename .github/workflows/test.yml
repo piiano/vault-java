@@ -1,4 +1,4 @@
-name: Test client
+name: Test all
 on:
   push:
 
@@ -16,21 +16,22 @@ jobs:
             distribution: 'zulu'
             cache: maven
 
-        - name: Run vault
+        - name: Build all
           run: |
-            docker run --rm --init \
-                 --name pvault-dev \
-                 -p 8123:8123 \
-                 -e PVAULT_SERVICE_LICENSE=${{ secrets.PVAULT_SERVICE_LICENSE }} \
-                 -e PVAULT_SENTRY_ENABLE=true \
-                 -e PVAULT_LOG_CUSTOMER_IDENTIFIER="piiano" \
-                 -e PVAULT_LOG_CUSTOMER_ENV="SDK" \
-                 -d \
-                 piiano/pvault-dev:latest
-            sleep 10
+              make all
+          working-directory: sdk
 
-        - name: Build and test client
+        - name: Test openapi
           run: |
-              mvn install
-              mvn test
-          working-directory: sdk/client
+            make test-openapi
+          working-directory: sdk
+
+        - name: Test client
+          run: |
+              make test-client
+          working-directory: sdk
+
+        - name: Test hibernate-encryption
+          run: |
+              make test-hibernate
+          working-directory: sdk

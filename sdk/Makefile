@@ -29,7 +29,7 @@ run-vault:
 		 -e PVAULT_SERVICE_LICENSE=${PVAULT_SERVICE_LICENSE} \
 		 -e PVAULT_SENTRY_ENABLE=true \
 		 -e PVAULT_LOG_CUSTOMER_IDENTIFIER="piiano" \
-		 -e PVAULT_LOG_CUSTOMER_ENV="SDK" \
+		 -e PVAULT_LOG_CUSTOMER_ENV="VAULT-JAVA" \
 		 -d \
 		 piiano/pvault-dev:latest
 	sleep 5
@@ -48,11 +48,20 @@ $(HIBERNATE_FOLDER): $(CLIENT_FOLDER)
 .PHONY: all
 all: $(HIBERNATE_FOLDER)
 
-.PHONY: test
-test: run-vault all
-	cd $(CLIENT_FOLDER) && mvn test && cd -
-	cd $(HIBERNATE_FOLDER) && mvn test && cd -
+.PHONY: test-openapi
+test-openapi: $(CLIENT_FOLDER)
 	cd $(GEN_FOLDER) && mvn test && cd -
+
+.PHONY: test-client
+test-client: run-vault $(CLIENT_FOLDER)
+	cd $(CLIENT_FOLDER) && mvn test && cd -
+
+.PHONY: test-hibernate
+test-hibernate: run-vault $(HIBERNATE_FOLDER)
+	cd $(HIBERNATE_FOLDER) && mvn test && cd -
+
+.PHONY: test
+test: run-vault test-hibernate test-client test-openapi
 
 .PHONY: clean
 clean:
