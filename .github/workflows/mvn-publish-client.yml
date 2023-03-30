@@ -1,5 +1,21 @@
-name: Publish to maven
+name: Publish Client to maven
 on:
+  workflow_call:
+    inputs:
+      maven_version:
+        description: 'Maven version to release'
+        required: true
+      vault_version:
+        description: 'Vault version to release'
+        required: true
+    secrets:
+      OSSRH_USERNAME:
+        description: 'OSSRH Username'
+        required: true
+      OSSRH_TOKEN:
+        description: 'OSSRH Token'
+        required: true
+
   workflow_dispatch:
     inputs:
       maven_version:
@@ -24,11 +40,19 @@ jobs:
             server-username: MAVEN_USERNAME
             server-password: MAVEN_PASSWORD
 
-        - name: Update version of sdk
+        - name: Update version of client
           run: |
-            # Updating version of client
+            # Updating version of client pom
             source VERSION
             cd sdk/client
+            sed -i "s/<version>$MAVEN_VERSION-SNAPSHOT<\/version>/<version>${{ inputs.maven_version }}-SNAPSHOT<\/version>/g" pom.xml
+            cd -
+            
+            # updating the version of openapi pom
+            # So both client and openapi are matching
+            cd sdk
+            make generate-openapi
+            cd openapi
             sed -i "s/<version>$MAVEN_VERSION-SNAPSHOT<\/version>/<version>${{ inputs.maven_version }}-SNAPSHOT<\/version>/g" pom.xml
 
         - name: Update VERSION file
@@ -39,7 +63,7 @@ jobs:
           run: |
             git config --global user.email "cicd@piiano.com"
             git config --global user.name "Github Actions"
-            git add .
+            git add sdk/client/pom.xml VERSION
             git commit -m "Update client maven version to ${{ inputs.maven_version }}"
             git push
 
@@ -47,6 +71,15 @@ jobs:
           if : success()
           run: |
             cd sdk/client
+            mvn --batch-mode deploy
+          env:
+            MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+            MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+
+        - name: Build and publish openapi
+          if: success()
+          run: |
+            cd sdk/openapi
             mvn --batch-mode deploy
           env:
             MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
