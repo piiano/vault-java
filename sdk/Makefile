@@ -50,7 +50,7 @@ all: $(HIBERNATE_FOLDER)
 
 .PHONY: test-openapi
 test-openapi: run-vault $(CLIENT_FOLDER)
-	cd $(GEN_FOLDER) && mvn test && cd -
+	cd $(GEN_FOLDER) && mvn -X test && cd -
 
 .PHONY: test-client
 test-client: run-vault $(CLIENT_FOLDER)
