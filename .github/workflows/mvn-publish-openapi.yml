@@ -3,9 +3,11 @@ on:
   workflow_call:
     inputs:
       maven_version:
+        type: string
         description: 'Maven version to release'
         required: true
       vault_version:
+        type: string
         description: 'Vault version to release'
         required: true
     secrets:
@@ -29,11 +31,13 @@ jobs:
   build-n-publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Checkout repo
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install java
         uses: actions/setup-java@v3
         with:
-          java-version: '19'
+          java-version: '8'
           distribution: 'zulu'
           cache: maven
           server-id: ossrh
@@ -46,6 +50,8 @@ jobs:
           # update the generator config file with the required version
           sed -i "s/$MAVEN_VERSION-SNAPSHOT/${{ inputs.maven_version }}-SNAPSHOT/g" config.yaml
           make generate-openapi
+          sed -i "s/<build>/    <distributionManagement>\n    <snapshotRepository>\n    <id>ossrh<\/id>\n   <url>https:\/\/s01.oss.sonatype.org\/content\/repositories\/snapshots<\/url>\n    <\/snapshotRepository>\n    <\/distributionManagement>\n\n     <build>/g" openapi/pom.xml
+          sed -i "s/<plugins>/<plugins>\n    <plugin>\n    <groupId>org.sonatype.plugins<\/groupId>\n    <artifactId>nexus-staging-maven-plugin<\/artifactId>\n    <version>1.6.7<\/version>\n    <extensions>true<\/extensions>\n    <configuration>\n      <serverId>ossrh<\/serverId>\n      <nexusUrl>https:\/\/s01.oss.sonatype.org\/<\/nexusUrl>\n      <autoReleaseAfterClose>true<\/autoReleaseAfterClose>\n    <\/configuration>\n  <\/plugin>\n/g" openapi/pom.xml
 
       - name: Build and publish openapi
         if: success()

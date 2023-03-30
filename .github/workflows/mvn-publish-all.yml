@@ -3,13 +3,24 @@ on:
   workflow_dispatch:
     inputs:
       maven_version:
+        type: string
         description: 'Maven version to release'
         required: true
       vault_version:
+        type: string
         description: 'Vault version to release'
         required: true
 
 jobs:
+  publish-openapi:
+    uses: piiano/vault-java/.github/workflows/mvn-publish-openapi.yml@main
+    inputs:
+      maven_version: ${{ inputs.maven_version }}
+      vault_version: ${{ inputs.vault_version }}
+    secrets:
+      OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+      OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+  
   publish-client:
     uses: piiano/vault-java/.github/workflows/mvn-publish-client.yml@main
     inputs:
