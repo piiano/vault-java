@@ -1,0 +1,36 @@
+name: Test client
+on:
+  push:
+
+jobs:
+  test-client:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+
+        - name: Install java
+          uses: actions/setup-java@v3
+          with:
+            java-version: '19'
+            distribution: 'zulu'
+            cache: maven
+
+        - name: Run vault
+          run: |
+            docker run --rm --init \
+                 --name pvault-dev \
+                 -p 8123:8123 \
+                 -e PVAULT_SERVICE_LICENSE=${{ secrets.PVAULT_SERVICE_LICENSE }} \
+                 -e PVAULT_SENTRY_ENABLE=true \
+                 -e PVAULT_LOG_CUSTOMER_IDENTIFIER="piiano" \
+                 -e PVAULT_LOG_CUSTOMER_ENV="SDK" \
+                 -d \
+                 piiano/pvault-dev:latest
+            sleep 10
+
+        - name: Build and test client
+          run: |
+              mvn install
+              mvn test
+          working-directory: sdk/client
