@@ -6,12 +6,16 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.DynamicParameterizedType;
 import org.hibernate.usertype.UserType;
 
+import javax.persistence.Column;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -29,16 +33,7 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 	public static final String COLLECTION = "collection";
 	public static final String PROPERTY = "property";
 
-	private EncryptionType encryptionType;
-	private String collectionName;
-	private String propertyName;
-	private String requestedProperty;
-
-	private final Encryptor encryptor;
-
-	public Encrypted() {
-		encryptor = new Encryptor();
-	}
+	private Encryptor encryptor;
 
 	@Override
 	public int[] sqlTypes() {
@@ -96,7 +91,7 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 		try {
 			String value = rs.getString(names[0]);
 			if (encryptor.isEncrypted(value)) {
-				value = encryptor.decrypt(this.collectionName, this.requestedProperty, value).toString();
+				value = encryptor.decrypt(value).toString();
 			}
 			return value;
 		} catch (Exception e) {
@@ -117,7 +112,7 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 			String propValue = value.toString();
 
 			if (propValue != null && !encryptor.isEncrypted(propValue)) {
-				propValue = encryptor.encrypt(encryptionType, collectionName, propertyName, propValue);
+				propValue = encryptor.encrypt(propValue);
 			}
 
 			st.setString(index, propValue);
@@ -128,18 +123,31 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 
 	@Override
 	public void setParameterValues(Properties parameters) {
-		if (EncryptionType.DETERMINISTIC.toString().equalsIgnoreCase(parameters.getProperty(TYPE))) {
-			this.encryptionType = EncryptionType.DETERMINISTIC;
-		} else {
-			this.encryptionType = EncryptionType.RANDOMIZED;
+
+		EncryptionType encryptionType = EncryptionType.DETERMINISTIC;
+		if (EncryptionType.RANDOMIZED.toString().equalsIgnoreCase(parameters.getProperty(TYPE))) {
+			encryptionType = EncryptionType.RANDOMIZED;
 		}
 
-		this.collectionName = parameters.getProperty(COLLECTION);
+		ParameterType parameterType = (ParameterType) parameters.get(DynamicParameterizedType.PARAMETER_TYPE);
 
-		this.propertyName = parameters.getProperty(PROPERTY);
-		this.requestedProperty = this.propertyName;
-		if (this.propertyName.indexOf(".") > 0) {
-			this.propertyName = this.propertyName.substring(0, this.propertyName.indexOf("."));
+		String collection = parameters.getProperty(COLLECTION) != null ?
+				parameters.getProperty(COLLECTION) :
+				parameterType.getTable();
+
+		String propertyName = parameters.getProperty(PROPERTY);
+		if (propertyName == null) {
+			Optional<String> columnName =
+					Arrays.stream(parameterType.getAnnotationsMethod())
+							.filter(a -> a.annotationType().isAssignableFrom(Column.class))
+							.map(c -> ((Column) c).name())
+							.findFirst();
+
+			if (columnName.isPresent()) {
+				propertyName = columnName.get();
+			}
 		}
+
+		encryptor = new Encryptor(encryptionType, collection, propertyName);
 	}
 }
