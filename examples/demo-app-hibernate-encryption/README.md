@@ -23,6 +23,10 @@ This level of integration is suitable for applications that are using ORM to acc
 1. Vault license - get a free trial license from [get-started](https://piiano.com/docs/guides/get-started) and set it to an environment variable `PVAULT_SERVICE_LICENSE`. 
 1. Mac or Linux machine. For windows you will need a WSL2 console.
 
+## Compiling the application
+
+Run: `mvn clean install -DskipTests`
+
 ## Running the application
 
 The demo application can be either run automatically by our provided script or manually.  
