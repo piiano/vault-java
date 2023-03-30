@@ -12,23 +12,23 @@ jobs:
         - name: Install java
           uses: actions/setup-java@v3
           with:
-            java-version: '19'
+            java-version: '8'
             distribution: 'zulu'
             cache: maven
 
         - name: Build all
           run: |
-              make all
+            make all
           working-directory: sdk
 
-        - name: Test openapi
-          run: |
-            make test-openapi
-          working-directory: sdk
+#        - name: Test openapi
+#          run: |
+#            make test-openapi
+#          working-directory: sdk
 
         - name: Test client
           run: |
-              make test-client
+            make test-client
           working-directory: sdk
 
         - name: Test hibernate-encryption

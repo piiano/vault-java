@@ -40,21 +40,21 @@ jobs:
             server-username: MAVEN_USERNAME
             server-password: MAVEN_PASSWORD
 
-        - name: Generate openapi
-          run: |
-            cd sdk
-            # update the generator config file with the required version
-            sed -i "s/$MAVEN_VERSION-SNAPSHOT/${{ inputs.maven_version }}-SNAPSHOT/g" config.yaml
-            make generate-openapi
-
-        - name: Build and publish openapi
-          if: success()
-          run: |
-            cd sdk/openapi
-            mvn --batch-mode deploy -DskipTests
-          env:
-            MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-            MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+#        - name: Generate openapi
+#          run: |
+#            cd sdk
+#            # update the generator config file with the required version
+#            sed -i "s/$MAVEN_VERSION-SNAPSHOT/${{ inputs.maven_version }}-SNAPSHOT/g" config.yaml
+#            make generate-openapi
+#
+#        - name: Build and publish openapi
+#          if: success()
+#          run: |
+#            cd sdk/openapi
+#            mvn --batch-mode deploy -DskipTests
+#          env:
+#            MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+#            MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
         - name: Update version of client
           run: |
