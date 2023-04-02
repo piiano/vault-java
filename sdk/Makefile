@@ -50,7 +50,7 @@ $(APP_FOLDER): $(HIBERNATE_FOLDER)
 	cd $(APP_FOLDER) && mvn install -DskipTests && cd -
 
 .PHONY: all
-all: $(HIBERNATE_FOLDER)
+all: $(APP_FOLDER)
 
 .PHONY: test-openapi
 test-openapi: run-vault $(CLIENT_FOLDER)

@@ -42,7 +42,7 @@ jobs:
           cache: maven
 
       - name: Prepare.
-        run: cd sdk && make && cd ../examples/demo-app-hibernate-encryption && mvn install -DskipTests && \rm -rf ../../sdk/openapi
+        run: cd sdk && make
         
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
