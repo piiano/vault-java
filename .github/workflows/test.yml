@@ -33,5 +33,5 @@ jobs:
 
         - name: Test hibernate-encryption
           run: |
-              make test-hibernate
+            make test-hibernate
           working-directory: sdk
