@@ -53,7 +53,13 @@ public class CollectionSetup {
                 ).addPropertiesItem(
                         new Property().name("phone").dataTypeName("PHONE_NUMBER").description("Phone")
                                 .isEncrypted(true).isNullable(true)
-                );
+                ).addPropertiesItem(
+                        new Property().name("ssn").dataTypeName("SSN").description("ssn")
+                            .isEncrypted(true).isNullable(true)
+                ).addPropertiesItem(
+                new Property().name("email").dataTypeName("EMAIL").description("ssn")
+                    .isEncrypted(true).isNullable(true)
+            );
     }
 
     private static ApiClient getApiClient() {

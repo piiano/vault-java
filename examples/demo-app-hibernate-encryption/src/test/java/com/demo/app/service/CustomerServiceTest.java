@@ -36,6 +36,34 @@ class CustomerServiceTest {
     }
 
     @Test
+    public void testCreateAndFindCustomer() {
+
+        customerService.addCustomer(getCustomer());
+
+        // Note that the customer name is "John" is marked as Encrypted and is therefore stored in your
+        // database as a ciphertext value. And yet you can search for it using the plaintext value.
+        List<Customer> results = customerService.findCustomerByName("John");
+        assertEquals(1, results.size());
+        Customer actual = results.get(0);
+
+        assertEquals("John", actual.getName());
+        assertEquals("123-45-6789", actual.getSsn());
+        assertEquals("david@gmail.com", actual.getEmail());
+        assertEquals("+8-888-88888", actual.getPhone());
+        assertEquals("CA", actual.getState());
+        assertEquals("***-**-6789", actual.getSsnMask());
+        assertEquals("d****@gmail.com", actual.getEmailMask());
+
+        // Cleanup.
+
+        List<Integer> customerIds = results.stream()
+            .map(Customer::getId)
+            .collect(Collectors.toList());
+
+        deleteCustomers(customerIds);
+    }
+
+    @Test
     public void testCreateAndGetCustomer() {
 
         customerService.addCustomer(getCustomer());
@@ -169,6 +197,8 @@ class CustomerServiceTest {
         customer.setName("John");
         customer.setPhone("+8-888-88888");
         customer.setState("CA");
+        customer.setSsn("123-45-6789");
+        customer.setEmail("david@gmail.com");
         return customer;
     }
 
@@ -179,11 +209,13 @@ class CustomerServiceTest {
         customer2.setName("Alice");
         customer2.setPhone("+11111111");
         customer2.setState("NY");
+        customer2.setSsn("123-45-6789");
 
         Customer customer3 = new Customer();
         customer3.setName("Bob");
         customer3.setPhone("+22222222");
         customer3.setState("AZ");
+        customer3.setSsn("321-45-6789");
 
         return ImmutableList.of(customer1, customer2, customer3);
     }

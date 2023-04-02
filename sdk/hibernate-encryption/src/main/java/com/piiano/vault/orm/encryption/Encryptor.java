@@ -7,6 +7,7 @@ import com.piiano.vault.client.model.AccessReason;
 import com.piiano.vault.client.model.DefaultParams;
 import com.piiano.vault.client.openapi.ApiException;
 import com.piiano.vault.client.openapi.model.*;
+import lombok.Getter;
 
 import java.util.Collections;
 
@@ -20,6 +21,7 @@ public class Encryptor {
 
 	private final EncryptionType encryptionType;
 
+	@Getter
 	private final String propertyName;
 
 	private final String requestedProperty;
