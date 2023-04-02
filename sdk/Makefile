@@ -5,7 +5,7 @@ OPENAPI_YAML := openapi.yaml
 GEN_FOLDER := openapi
 CLIENT_FOLDER := client
 HIBERNATE_FOLDER := hibernate-encryption
-
+APP_FOLDER := ../examples/demo-app-hibernate-encryption
 CODEGEN_IMAGE := openapitools/openapi-generator-cli:v6.4.0
 CODEGEN_CONFIG_FILE := config.yaml
 
@@ -24,6 +24,7 @@ run-vault:
 	docker rm -f pvault-dev
 	docker run --init \
 		 --name pvault-dev \
+		 --add-host='host.docker.internal:host-gateway' \
 		 -p 8123:8123 \
 		 -e PVAULT_SERVICE_LICENSE=${PVAULT_SERVICE_LICENSE} \
 		 -e PVAULT_SENTRY_ENABLE=true \
@@ -44,8 +45,12 @@ $(CLIENT_FOLDER): generate-openapi
 $(HIBERNATE_FOLDER): $(CLIENT_FOLDER)
 	cd hibernate-encryption && mvn install -DskipTests && cd -
 
+.PHONE: $(APP_FOLDER)
+$(APP_FOLDER): $(HIBERNATE_FOLDER)
+	cd $(APP_FOLDER) && mvn install -DskipTests && cd -
+
 .PHONY: all
-all: $(HIBERNATE_FOLDER)
+all: $(APP_FOLDER)
 
 .PHONY: test-openapi
 test-openapi: run-vault $(CLIENT_FOLDER)
@@ -58,6 +63,10 @@ test-client: run-vault $(CLIENT_FOLDER)
 .PHONY: test-hibernate
 test-hibernate: run-vault $(HIBERNATE_FOLDER)
 	cd $(HIBERNATE_FOLDER) && mvn test && cd -
+
+.PHONE: test-app
+test-app: run-vault $(APP_FOLDER)
+	cd ../examples/demo-app-hibernate-encryption && mvn test && cd -
 
 .PHONY: test
 test: run-vault test-hibernate test-client test-openapi

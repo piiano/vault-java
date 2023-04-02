@@ -21,12 +21,14 @@ This level of integration is suitable for applications that are using ORM to acc
 1. Maven (3.8.3+)/Gradle (7.2+)
 1. Docker
 1. Vault license - get a free trial license from [get-started](https://piiano.com/docs/guides/get-started) and set it to an environment variable `PVAULT_SERVICE_LICENSE`. 
-1. Mac or Linux machine. For windows you will need a WSL2 console.
+1. Mac or Linux machine. For Windows, you will need a WSL2 console.
 
 ## Compiling the application
 
 Run: `mvn clean install -DskipTests`  
 To run it with tests: `mvn clean install`
+
+**NOTE** To run tests you need to first run vault. See [get-started](https://piiano.com/docs/guides/get-started) guide.
 
 ## Running the application
 
