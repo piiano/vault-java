@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
 
-VAULT_VERSION := v1.2.2
+VAULT_VERSION := 1.2.2
 OPENAPI_YAML := openapi.yaml
 GEN_FOLDER := openapi
 CLIENT_FOLDER := client
@@ -10,7 +10,7 @@ CODEGEN_IMAGE := openapitools/openapi-generator-cli:v6.4.0
 CODEGEN_CONFIG_FILE := config.yaml
 
 $(OPENAPI_YAML):
-	curl https://piiano.com/docs/$(subst .,-,$(VAULT_VERSION))/assets/openapi.yaml --output $@
+	curl https://piiano.com/docs/v$(subst .,-,$(VAULT_VERSION))/assets/openapi.yaml --output $@
 
 $(GEN_FOLDER)/pom.xml: $(OPENAPI_YAML) $(CODEGEN_CONFIG_FILE)
 	docker run --rm -u $(id -u):$(id -g) -v "${PWD}:/pwd" $(CODEGEN_IMAGE) generate \
@@ -31,7 +31,7 @@ run-vault:
 		 -e PVAULT_LOG_CUSTOMER_IDENTIFIER="piiano" \
 		 -e PVAULT_LOG_CUSTOMER_ENV="VAULT-JAVA" \
 		 -d \
-		 piiano/pvault-dev:latest
+		 piiano/pvault-dev:$(VAULT_VERSION)
 	sleep 5
 
 .PHONY: generate-openapi
@@ -39,15 +39,15 @@ generate-openapi: $(OPENAPI_YAML) $(GEN_FOLDER)/pom.xml
 
 .PHONY: $(CLIENT_FOLDER)
 $(CLIENT_FOLDER): generate-openapi
-	cd client && mvn install -DskipTests && cd -
+	cd client && mvn clean install -DskipTests && cd -
 
 .PHONY: $(HIBERNATE_FOLDER)
 $(HIBERNATE_FOLDER): $(CLIENT_FOLDER)
-	cd hibernate-encryption && mvn install -DskipTests && cd -
+	cd hibernate-encryption && mvn clean install -DskipTests && cd -
 
 .PHONE: $(APP_FOLDER)
 $(APP_FOLDER): $(HIBERNATE_FOLDER)
-	cd $(APP_FOLDER) && mvn install -DskipTests && cd -
+	cd $(APP_FOLDER) && mvn clean install -DskipTests && cd -
 
 .PHONY: all
 all: $(APP_FOLDER)
