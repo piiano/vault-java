@@ -46,18 +46,19 @@ jobs:
 
       - name: Generate openapi
         run: |
+          source VERSION
           cd sdk
-          # update the generator config file with the required version
-          sed -i "s/$MAVEN_VERSION-SNAPSHOT/${{ inputs.maven_version }}-SNAPSHOT/g" config.yaml
+          # update the generator config file with the required maven version
+          sed -i "s/artifactVersion: $MAVEN_VERSION/artifactVersion: ${{ inputs.maven_version }}/g" config.yaml
+          # update the makefile with the required vault version
+          sed -i "s/VAULT_VERSION := $MAVEN_VERSION/VAULT_VERSION := ${{ inputs.maven_version }}/g" Makefile
           make generate-openapi
-          sed -i "s/<build>/    <distributionManagement>\n    <snapshotRepository>\n    <id>ossrh<\/id>\n   <url>https:\/\/s01.oss.sonatype.org\/content\/repositories\/snapshots<\/url>\n    <\/snapshotRepository>\n    <\/distributionManagement>\n\n     <build>/g" openapi/pom.xml
-          sed -i "s/<plugins>/<plugins>\n    <plugin>\n    <groupId>org.sonatype.plugins<\/groupId>\n    <artifactId>nexus-staging-maven-plugin<\/artifactId>\n    <version>1.6.7<\/version>\n    <extensions>true<\/extensions>\n    <configuration>\n      <serverId>ossrh<\/serverId>\n      <nexusUrl>https:\/\/s01.oss.sonatype.org\/<\/nexusUrl>\n      <autoReleaseAfterClose>true<\/autoReleaseAfterClose>\n    <\/configuration>\n  <\/plugin>\n/g" openapi/pom.xml
+          git apply patches/*.patch
 
       - name: Build and publish openapi
-        if: success()
         run: |
           cd sdk/openapi
-          mvn --batch-mode deploy -DskipTests
+          mvn clean deploy --batch-mode -P sign-artifacts -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
