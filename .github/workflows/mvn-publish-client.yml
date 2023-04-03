@@ -35,7 +35,7 @@ jobs:
       - name: Checkout repo
         uses: actions/setup-java@v3
         with:
-          java-version: '19'
+          java-version: '8'
           distribution: 'zulu'
           cache: maven
           server-id: ossrh
@@ -47,13 +47,12 @@ jobs:
           # Updating version of client pom.xml
           source VERSION
           cd sdk/client
-          sed -i "s/<version>$MAVEN_VERSION-SNAPSHOT<\/version>/<version>${{ inputs.maven_version }}-SNAPSHOT<\/version>/g" pom.xml
+          sed -i "s/<version>$MAVEN_VERSION<\/version>/<version>${{ inputs.maven_version }}<\/version>/g" pom.xml
 
       - name: Build and publish client
-        if : success()
         run: |
           cd sdk/client
-          mvn --batch-mode deploy -DskipTests
+          mvn --batch-mode deploy -P sign-artifacts -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
@@ -63,20 +62,19 @@ jobs:
           # Updating version of hibernate-encryption pom.xml
           source VERSION
           cd sdk/hibernate-encryption
-          sed -i "s/<version>$MAVEN_VERSION-SNAPSHOT<\/version>/<version>${{ inputs.maven_version }}-SNAPSHOT<\/version>/g" pom.xml
+          sed -i "s/<version>$MAVEN_VERSION<\/version>/<version>${{ inputs.maven_version }}<\/version>/g" pom.xml
 
       - name: Build and publish hibernate-encryption
-        if: success()
         run: |
           cd sdk/hibernate-encryption
-          mvn --batch-mode deploy -DskipTests
+          mvn --batch-mode deploy -P sign-artifacts -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
       - name: Update VERSION file
         run: |
-          echo -e 'VAULT_VERSION="${{ inputs.vault_version }}"\nMAVEN_VERSION="${{ inputs.maven_version }}"' > VERSION 
+          echo -e 'VAULT_VERSION="${{ inputs.vault_version }}"\nMAVEN_VERSION="${{ inputs.maven_version }}"' > VERSION
 
       - name: Commit change and push
         run: |
