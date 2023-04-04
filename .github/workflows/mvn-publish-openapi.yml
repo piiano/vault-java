@@ -43,8 +43,6 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Generate openapi
         run: |
@@ -55,7 +53,6 @@ jobs:
           # update the makefile with the required vault version
           sed -i "s/VAULT_VERSION := $MAVEN_VERSION/VAULT_VERSION := ${{ inputs.maven_version }}/g" Makefile
           make generate-openapi
-          cmod +r openapi/pom.xml
           git apply patches/*.patch
 
       - name: Build and publish openapi
@@ -65,4 +62,3 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
