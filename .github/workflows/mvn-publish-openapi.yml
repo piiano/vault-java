@@ -64,6 +64,7 @@ jobs:
       - name: Build and publish openapi
         run: |
           cd sdk/openapi
+          cat pom.xml
           mvn deploy --batch-mode -P sign-artifacts -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
