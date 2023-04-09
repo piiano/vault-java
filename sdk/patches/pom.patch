@@ -1,8 +1,8 @@
 diff --git a/sdk/openapi/pom.xml b/sdk/openapi/pom.xml
-index ef629e6..001491d 100644
+index 6fd016c..9e77934 100644
 --- a/sdk/openapi/pom.xml
 +++ b/sdk/openapi/pom.xml
-@@ -31,9 +31,35 @@
+@@ -31,8 +31,26 @@
          </developer>
      </developers>
  
@@ -15,27 +15,31 @@ index ef629e6..001491d 100644
 +
      <build>
          <plugins>
--           <plugin>
 +            <plugin>
 +                <groupId>org.sonatype.plugins</groupId>
 +                <artifactId>nexus-staging-maven-plugin</artifactId>
-+                <version>1.6.8</version>
++                <version>1.6.13</version>
 +                <extensions>true</extensions>
 +                <configuration>
 +                    <serverId>ossrh</serverId>
 +                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
 +                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
 +                </configuration>
-+                <!--	work around for	https://stackoverflow.com/questions/70153962/nexus-staging-maven-plugin-maven-deploy-failed-an-api-incompatibility-was-enco	-->
-+                <dependencies>
-+                    <dependency>
-+                        <groupId>com.thoughtworks.xstream</groupId>
-+                        <artifactId>xstream</artifactId>
-+                        <version>1.4.15</version> <!-- apparently this needs to be exactly this version -->
-+                    </dependency>
-+                </dependencies>
 +            </plugin>
-+            <plugin>
+            <plugin>
                  <groupId>org.apache.maven.plugins</groupId>
                  <artifactId>maven-compiler-plugin</artifactId>
-                 <version>3.8.1</version>
+@@ -242,6 +260,13 @@
+                         <groupId>org.apache.maven.plugins</groupId>
+                         <artifactId>maven-gpg-plugin</artifactId>
+                         <version>3.0.1</version>
++                        <configuration>
++                            <!-- Prevent gpg from using pinentry programs -->
++                            <gpgArguments>
++                                <arg>--pinentry-mode</arg>
++                                <arg>loopback</arg>
++                            </gpgArguments>
++                        </configuration>
+                         <executions>
+                             <execution>
+                                 <id>sign-artifacts</id>

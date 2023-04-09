@@ -17,6 +17,12 @@ on:
       OSSRH_TOKEN:
         description: 'OSSRH Token'
         required: true
+      MAVEN_GPG_PRIVATE_KEY:
+        description: 'GPG private key'
+        required: true
+      MAVEN_GPG_PASSPHRASE:
+        description: 'GPG passphrase'
+        required: true
 
   workflow_dispatch:
     inputs:
@@ -24,7 +30,7 @@ on:
         description: 'Maven version to release'
         required: true
       vault_version:
-        description: 'Vault version to release'
+        description: 'Vault version for the release'
         required: true
 
 jobs:
@@ -34,39 +40,39 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install java
+      - name: Set up Java & Maven
         uses: actions/setup-java@v3
-        with:
-          java-version: '8'
+        with: # running setup-java again overwrites the settings.xml
+          java-version: 8
           distribution: 'zulu'
-          cache: maven
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          cache: 'maven'
+          server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
+          server-username: OSSRH_USERNAME # env variable for username in deploy
+          server-password: OSSRH_TOKEN # env variable for token in deploy
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
 
       - name: Generate openapi
         run: |
           source VERSION
           cd sdk
           # update the generator config file with the required maven version
-          sed -i "s/artifactVersion: $MAVEN_VERSION/artifactVersion: ${{ inputs.maven_version }}/g" config.yaml
+          sed -i "s/artifactVersion: \"$MAVEN_VERSION/artifactVersion: \"${{ inputs.maven_version }}/g" config.yaml
+          cat config.yaml
           # update the makefile with the required vault version
-          sed -i "s/VAULT_VERSION := $MAVEN_VERSION/VAULT_VERSION := ${{ inputs.maven_version }}/g" Makefile
+          sed -i "s/VAULT_VERSION\s:=\s$MAVEN_VERSION/VAULT_VERSION\s:=\s${{ inputs.maven_version }}/g" Makefile
+          cat Makefile
+          # generate Java sdk for the openapi
           make generate-openapi
-          echo "-------BEFORE------"
-          ls -la openapi/pom.xml
           sudo git apply patches/*.patch
-          echo "-------AFTER------"
-          ls -la openapi/pom.xml
+          cat openapi/pom.xml
 
       - name: Build and publish openapi
         run: |
+          sudo chmod -R 777 sdk/openapi
           cd sdk/openapi
-          cat pom.xml
-          mvn deploy --batch-mode -P sign-artifacts -DskipTests
+          mvn clean deploy -B -P sign-artifacts -DskipTests
         env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
