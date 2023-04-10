@@ -62,14 +62,14 @@ jobs:
           cd sdk/client
           sed -i "s/<version>$MAVEN_VERSION<\/version>/<version>${{ inputs.maven_version }}<\/version>/g" pom.xml
 
-#      - name: Build and publish client
-#        run: |
-#          cd sdk/client
-#          mvn clean deploy -B -P sign-artifacts -DskipTests
-#        env:
-#          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-#          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
-#          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+      - name: Build and publish client
+        run: |
+          cd sdk/client
+          mvn clean deploy -B -P sign-artifacts -DskipTests
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
       - name: Update version of hibernate-encryption
         run: |
@@ -78,20 +78,20 @@ jobs:
           cd sdk/hibernate-encryption
           sed -i "s/<version>$MAVEN_VERSION<\/version>/<version>${{ inputs.maven_version }}<\/version>/g" pom.xml
 
-#      - name: Build and publish hibernate-encryption
-#        run: |
-#          cd sdk/hibernate-encryption
-#          mvn clean deploy -B -P sign-artifacts -DskipTests
-#        env:
-#          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-#          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
-#          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+      - name: Build and publish hibernate-encryption
+        run: |
+          cd sdk/hibernate-encryption
+          mvn clean deploy -B -P sign-artifacts -DskipTests
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
       - name: Update demo-app-hibernate-encryption
         run: |
           source VERSION
           cd examples/demo-app-hibernate-encryption
-          sed -i "s/<vault-java.version>$MAVEN_VERSION/<vault-java.version>${{ inputs.maven_version }}/g" pom.xml
+          sed -i "s/<vault-java\.version>$MAVEN_VERSION/<vault-java\.version>${{ inputs.maven_version }}/g" pom.xml
           sed -i "s/DOCKER_TAG=\"$VAULT_VERSION/DOCKER_TAG=\"${{ inputs.vault_version }}/g" run.sh
 
       - name: Update VERSION file
