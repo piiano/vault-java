@@ -1,5 +1,5 @@
 diff --git a/sdk/openapi/pom.xml b/sdk/openapi/pom.xml
-index 6fd016c..9e77934 100644
+index 3e60ee8..2d8c901 100644
 --- a/sdk/openapi/pom.xml
 +++ b/sdk/openapi/pom.xml
 @@ -31,8 +31,26 @@
@@ -29,17 +29,3 @@ index 6fd016c..9e77934 100644
             <plugin>
                  <groupId>org.apache.maven.plugins</groupId>
                  <artifactId>maven-compiler-plugin</artifactId>
-@@ -242,6 +260,13 @@
-                         <groupId>org.apache.maven.plugins</groupId>
-                         <artifactId>maven-gpg-plugin</artifactId>
-                         <version>3.0.1</version>
-+                        <configuration>
-+                            <!-- Prevent gpg from using pinentry programs -->
-+                            <gpgArguments>
-+                                <arg>--pinentry-mode</arg>
-+                                <arg>loopback</arg>
-+                            </gpgArguments>
-+                        </configuration>
-                         <executions>
-                             <execution>
-                                 <id>sign-artifacts</id>

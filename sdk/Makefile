@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
 
-VAULT_VERSION := 1.2.2
+VAULT_VERSION ?= 1.2.2
 OPENAPI_YAML := openapi.yaml
 GEN_FOLDER := openapi
 CLIENT_FOLDER := client
@@ -13,11 +13,11 @@ $(OPENAPI_YAML):
 	curl https://piiano.com/docs/v$(subst .,-,$(VAULT_VERSION))/assets/openapi.yaml --output $@
 
 $(GEN_FOLDER)/pom.xml: $(OPENAPI_YAML) $(CODEGEN_CONFIG_FILE)
-	docker run --rm -u $(id -u):$(id -g) -v "${PWD}:/pwd" $(CODEGEN_IMAGE) generate \
-        -g java \
-        -i pwd/$(OPENAPI_YAML) \
-        -c pwd/$(CODEGEN_CONFIG_FILE) \
-        -o pwd/$(GEN_FOLDER)
+	docker run --rm -v "${PWD}:/pwd" $(CODEGEN_IMAGE) generate \
+            -g java \
+            -i /pwd/$(OPENAPI_YAML) \
+            -c /pwd/$(CODEGEN_CONFIG_FILE) \
+            -o /pwd/$(GEN_FOLDER)
 
 .PHONY: run-vault
 run-vault:

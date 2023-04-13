@@ -1,29 +1,6 @@
-name: Publish client to maven
+name: Build and Publish maven central
 on:
-  workflow_call:
-    inputs:
-      maven_version:
-        type: string
-        description: 'Maven version to release'
-        required: true
-      vault_version:
-        type: string
-        description: 'Vault version to release'
-        required: true
-    secrets:
-      OSSRH_USERNAME:
-        description: 'OSSRH Username'
-        required: true
-      OSSRH_TOKEN:
-        description: 'OSSRH Token'
-        required: true
-      MAVEN_GPG_PRIVATE_KEY:
-        description: 'GPG private key'
-        required: true
-      MAVEN_GPG_PASSPHRASE:
-        description: 'GPG passphrase'
-        required: true
-
+  push:
   workflow_dispatch:
     inputs:
       maven_version:
@@ -37,13 +14,10 @@ jobs:
   build-n-publish:
     runs-on: ubuntu-latest
     steps:
-      - name: secrets
-        run: echo '${{ toJSON(secrets) }}'
-
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up Apache Maven Central
+      - name: Set up Java & Maven
         uses: actions/setup-java@v3
         with: # running setup-java again overwrites the settings.xml
           java-version: 8
@@ -55,33 +29,48 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
 
-      - name: Update version of client
+      - name: Generate openapi
         run: |
-          # Updating version of client pom.xml
           source VERSION
-          cd sdk/client
-          sed -i "s/<version>$MAVEN_VERSION<\/version>/<version>${{ inputs.maven_version }}<\/version>/g" pom.xml
+          cd sdk
+          # update the generator config file with the required maven version
+          sed -i "s/artifactVersion: \"$MAVEN_VERSION/artifactVersion: \"${{ inputs.maven_version }}/g" config.yaml
+          # update the makefile with the required vault version
+          sed -i "s/VAULT_VERSION\s:=\s$MAVEN_VERSION/VAULT_VERSION\s:=\s${{ inputs.maven_version }}/g" Makefile
+          # generate Java sdk for the openapi
+          make generate-openapi
+          sudo chmod 755 ./openapi
+          sudo chmod -R 644 ./openapi/*
+          sudo chown -R runner ./openapi
+          git apply patches/*.patch
 
-      - name: Build and publish client
-        run: |
-          cd sdk/client
-          mvn clean deploy -B -P sign-artifacts -DskipTests
+      - name: Build and publish openapi
+        working-directory: sdk/openapi
+        run: mvn clean install -B -P sign-artifacts -DskipTests
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
-      - name: Update version of hibernate-encryption
-        run: |
-          # Updating version of hibernate-encryption pom.xml
-          source VERSION
-          cd sdk/hibernate-encryption
-          sed -i "s/<version>$MAVEN_VERSION<\/version>/<version>${{ inputs.maven_version }}<\/version>/g" pom.xml
+      - name: Update version of client pom.xml
+        working-directory: sdk/client
+        run: mvn versions:set -DnewVersion=${{ inputs.maven_version }}
+
+      - name: Build and publish client
+        working-directory: sdk/client
+        run: mvn clean install -B -P sign-artifacts -DskipTests
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      - name: Update version of hibernate-encryption pom.xml
+        working-directory: sdk/hibernate-encryption
+        run: mvn versions:set -DnewVersion=${{ inputs.maven_version }}
 
       - name: Build and publish hibernate-encryption
-        run: |
-          cd sdk/hibernate-encryption
-          mvn clean deploy -B -P sign-artifacts -DskipTests
+        working-directory: sdk/hibernate-encryption
+        run: mvn clean install -B -P sign-artifacts -DskipTests
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
@@ -95,13 +84,13 @@ jobs:
           sed -i "s/DOCKER_TAG=\"$VAULT_VERSION/DOCKER_TAG=\"${{ inputs.vault_version }}/g" run.sh
 
       - name: Update VERSION file
-        run: |
-          echo -e 'VAULT_VERSION="${{ inputs.vault_version }}"\nMAVEN_VERSION="${{ inputs.maven_version }}"\n' > VERSION
+        run: echo -e 'VAULT_VERSION="${{ inputs.vault_version }}"\nMAVEN_VERSION="${{ inputs.maven_version }}"\n' > VERSION
 
-      - name: Commit change and push
+      - name: Commit version changes and push
         run: |
           git config --global user.email "cicd@piiano.com"
           git config --global user.name "Github Actions"
           git add sdk/client/pom.xml sdk/hibernate-encryption/pom.xml VERSION
-          git commit -m "Update client maven version to ${{ inputs.maven_version }}"
+          git commit -m "Update maven version to ${{ inputs.maven_version }} and vault version to ${{ inputs.vault_version }}"
           git push
+
