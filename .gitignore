@@ -11,6 +11,7 @@ openapi/
 target
 .gradle
 build
+pom.xml.versionsBackup
 
 # Log file
 *.log
