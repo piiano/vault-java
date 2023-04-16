@@ -1,6 +1,5 @@
 name: Build and Publish maven central
 on:
-  push:
   workflow_dispatch:
     inputs:
       maven_version:
@@ -90,7 +89,6 @@ jobs:
         run: |
           git config --global user.email "cicd@piiano.com"
           git config --global user.name "Github Actions"
-          git add sdk/client/pom.xml sdk/hibernate-encryption/pom.xml VERSION
+          git add VERSION sdk/client/pom.xml sdk/hibernate-encryption/pom.xml sdk/config.yaml sdk/Makefile examples/demo-app-hibernate-encryption/pom.xml
           git commit -m "Update maven version to ${{ inputs.maven_version }} and vault version to ${{ inputs.vault_version }}"
           git push
-
