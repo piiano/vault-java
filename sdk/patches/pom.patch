@@ -1,0 +1,31 @@
+diff --git a/sdk/openapi/pom.xml b/sdk/openapi/pom.xml
+index 3e60ee8..2d8c901 100644
+--- a/sdk/openapi/pom.xml
++++ b/sdk/openapi/pom.xml
+@@ -31,8 +31,26 @@
+         </developer>
+     </developers>
+ 
++    <distributionManagement>
++        <snapshotRepository>
++            <id>ossrh</id>
++            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
++        </snapshotRepository>
++    </distributionManagement>
++
+     <build>
+         <plugins>
++            <plugin>
++                <groupId>org.sonatype.plugins</groupId>
++                <artifactId>nexus-staging-maven-plugin</artifactId>
++                <version>1.6.13</version>
++                <extensions>true</extensions>
++                <configuration>
++                    <serverId>ossrh</serverId>
++                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
++                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
++                </configuration>
++            </plugin>
+            <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-compiler-plugin</artifactId>
