@@ -154,12 +154,13 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 
 	private void saveEncryptedValueOnOwner(Object owner, String encryptedValue) throws IllegalAccessException {
 		Class<?> clazz = owner.getClass();
-		List<Field> propertyField = Arrays.stream(clazz.getDeclaredFields())
+		Optional<Field> propertyField = Arrays.stream(clazz.getDeclaredFields())
 			.filter(f -> f.getName().equals(encryptor.getPropertyName()))
-			.collect(Collectors.toList());
+			.collect(Collectors.toList())
+			.stream().findFirst();
 
-		if (! propertyField.isEmpty()) {
-			Field field = propertyField.get(0);
+		if (! propertyField.isPresent()) {
+			Field field = propertyField.get();
 			field.setAccessible(true);
 			field.set(owner, encryptedValue);
 		}
