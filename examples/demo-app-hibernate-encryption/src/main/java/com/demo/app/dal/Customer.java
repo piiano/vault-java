@@ -43,10 +43,6 @@ public class Customer {
     @Type(type = "Encrypted")
     private String ssn;
 
-    @Column(name = "ssn_masked")
-    @Type(type = "Encrypted", parameters = {@Parameter(name = PROPERTY, value = "ssn.mask")})
-    private String ssnMasked;
-
     @Column(name = "dob")
     @Type(type = "Encrypted")
     private String dob;
