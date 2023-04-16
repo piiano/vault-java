@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>6.0.6</version>
+			<version>${spring-context.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -70,19 +70,12 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
+		<lombok.version>1.18.26</lombok.version>
+		<guava.version>31.1-jre</guava.version>
+		<spring-context.version>6.0.6</spring-context.version>
 		<hibernate-core.version>5.6.9.Final</hibernate-core.version>
 		<junit.version>4.13.2</junit.version>
 		<junit-jupiter-api.version>5.9.2</junit-jupiter-api.version>
-		<lombok.version>1.18.26</lombok.version>
-		<guava.version>31.1-jre</guava.version>
-		<swagger-annotations.version>1.6.8</swagger-annotations.version>
-		<jersey-version>3.1.1</jersey-version>
-		<jackson-version>2.14.2</jackson-version>
-		<jackson-databind-nullable-version>0.2.6</jackson-databind-nullable-version>
-		<maven-plugin-version>1.0.0</maven-plugin-version>
-		<http-signature-version>1.8</http-signature-version>
-		<scribejava-apis.version>8.3.3</scribejava-apis.version>
-		<jsr305.version>3.0.2</jsr305.version>
 	</properties>
 
 	<distributionManagement>

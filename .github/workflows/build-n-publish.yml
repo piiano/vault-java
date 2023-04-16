@@ -84,7 +84,7 @@ jobs:
           sed -i "s/DOCKER_TAG=\"$VAULT_VERSION/DOCKER_TAG=\"${{ inputs.vault_version }}/g" run.sh
 
       - name: Update VERSION file
-        run: echo -e 'VAULT_VERSION="${{ inputs.vault_version }}"\nMAVEN_VERSION="${{ inputs.maven_version }}"\n' > VERSION
+        run: echo -e 'VAULT_VERSION="${{ inputs.vault_version }}"\nMAVEN_VERSION="${{ inputs.maven_version }}"' > VERSION
 
       - name: Commit version changes and push
         run: |
