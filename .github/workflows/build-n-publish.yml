@@ -1,4 +1,4 @@
-name: Build and Publish maven central
+name: Publish
 on:
   workflow_dispatch:
     inputs:
