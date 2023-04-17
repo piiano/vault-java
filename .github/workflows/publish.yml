@@ -33,22 +33,18 @@ jobs:
           source VERSION
           cd sdk
           # update the generator config file with the required maven version
-          sed -i "s/artifactVersion:\s\"$PUBLISH_VERSION/artifactVersion:\s\"${{ inputs.publish_version }}/g" config.yaml
-          cat config.yaml
+          sed -i "s/artifactVersion:\s\"$PUBLISH_VERSION/artifactVersion: \"${{ inputs.publish_version }}/g" config.yaml
           # update the makefile with the required vault version
-          sed -i "s/VAULT_VERSION\s?=\s$VAULT_VERSION/VAULT_VERSION\s?=\s${{ inputs.vault_version }}/g" Makefile
-          cat Makefile
+          sed -i "s/VAULT_VERSION\s?=\s$VAULT_VERSION/VAULT_VERSION ?= ${{ inputs.vault_version }}/g" Makefile
           # generate Java sdk for the openapi
           make generate-openapi
-          sudo chmod 755 ./openapi
-          sudo chmod -R 644 ./openapi/*
-          sudo chown -R runner ./openapi
+          sudo chmod 777 ./openapi
           git apply patches/*.patch
-          cat openapi/pom.xml
 
       - name: Build and publish openapi
         working-directory: sdk/openapi
-        run: mvn clean install -B -P sign-artifacts -DskipTests
+        run: |
+          mvn clean deploy -B -P sign-artifacts -DskipTests
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
@@ -60,7 +56,7 @@ jobs:
 
       - name: Build and publish client
         working-directory: sdk/client
-        run: mvn clean install -B -P sign-artifacts -DskipTests
+        run: mvn clean deploy -B -P sign-artifacts -DskipTests
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
@@ -72,7 +68,7 @@ jobs:
 
       - name: Build and publish hibernate-encryption
         working-directory: sdk/hibernate-encryption
-        run: mvn clean install -B -P sign-artifacts -DskipTests
+        run: mvn clean deploy -B -P sign-artifacts -DskipTests
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
@@ -92,6 +88,6 @@ jobs:
         run: |
           git config --global user.email "cicd@piiano.com"
           git config --global user.name "Github Actions"
-          git add VERSION sdk/client/pom.xml sdk/hibernate-encryption/pom.xml sdk/config.yaml sdk/Makefile examples/demo-app-hibernate-encryption/pom.xml
+          git add VERSION sdk/client/pom.xml sdk/hibernate-encryption/pom.xml sdk/config.yaml sdk/Makefile examples/demo-app-hibernate-encryption/pom.xml examples/demo-app-hibernate-encryption/run.sh
           git commit -m "Update publish version to ${{ inputs.publish_version }} and vault version to ${{ inputs.vault_version }}"
           git push

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static com.piiano.vault.client.CollectionSetup.collectionName;
 import static com.piiano.vault.client.DefaultClient.getDefaultClient;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -21,7 +22,7 @@ public class CryptoClientTest {
     private final ApiClient apiClient = getDefaultClient();
 
     private final CryptoClient cryptoClient = new CryptoClient(apiClient,
-            DefaultParams.builder().collection("users").accessReason(AccessReason.AppFunctionality).build());
+            DefaultParams.builder().collection(collectionName).accessReason(AccessReason.AppFunctionality).build());
 
     @BeforeEach
     public void beforeEach() throws ApiException {

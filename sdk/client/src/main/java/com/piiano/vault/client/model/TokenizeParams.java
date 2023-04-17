@@ -29,4 +29,9 @@ public class TokenizeParams {
      * reloadCache Reloads the cache before the action. (optional)
      */
     private Boolean reloadCache;
+
+    /**
+     * transactionId The transaction ID to attach to the token.
+     */
+    private String transactionId;
 }

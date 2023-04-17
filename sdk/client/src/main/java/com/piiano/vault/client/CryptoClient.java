@@ -1,12 +1,12 @@
 package com.piiano.vault.client;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.piiano.vault.client.model.*;
 import com.piiano.vault.client.openapi.ApiClient;
 import com.piiano.vault.client.openapi.ApiException;
 import com.piiano.vault.client.openapi.CryptoApi;
 import com.piiano.vault.client.openapi.model.*;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -90,7 +90,7 @@ public class CryptoClient {
         AccessReason accessReason = encryptParams.getAccessReason() != null ? encryptParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         List<EncryptedValue> encryptedValues = this.cryptoApi.encrypt(
-                StringUtils.isNotEmpty(encryptParams.getCollection()) ? encryptParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(encryptParams.getCollection()) ? encryptParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 ImmutableList.of(encryptionRequest),
                 encryptParams.getExpirationSecs(),
@@ -160,7 +160,7 @@ public class CryptoClient {
         AccessReason accessReason = encryptParams.getAccessReason() != null ? encryptParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         return this.cryptoApi.encrypt(
-                StringUtils.isNotEmpty(encryptParams.getCollection()) ? encryptParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(encryptParams.getCollection()) ? encryptParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 encryptionRequests,
                 encryptParams.getExpirationSecs(),
@@ -232,7 +232,7 @@ public class CryptoClient {
         AccessReason accessReason = decryptParams.getAccessReason() != null ? decryptParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         List<DecryptedObject> decryptedObjects = this.cryptoApi.decrypt(
-                StringUtils.isNotEmpty(decryptParams.getCollection()) ? decryptParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(decryptParams.getCollection()) ? decryptParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 ImmutableList.of(decryptionRequest),
                 options,
@@ -304,7 +304,7 @@ public class CryptoClient {
         AccessReason accessReason = decryptParams.getAccessReason() != null ? decryptParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         return this.cryptoApi.decrypt(
-                StringUtils.isNotEmpty(decryptParams.getCollection()) ? decryptParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(decryptParams.getCollection()) ? decryptParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 decryptionRequests,
                 options,
@@ -377,7 +377,7 @@ public class CryptoClient {
         AccessReason accessReason = updateEncryptedParams.getAccessReason() != null ? updateEncryptedParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         List<EncryptedValue> encryptedValues = this.cryptoApi.updateEncrypted(
-                StringUtils.isNotEmpty(updateEncryptedParams.getCollection()) ? updateEncryptedParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(updateEncryptedParams.getCollection()) ? updateEncryptedParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 ImmutableList.of(updateEncryptionRequest),
                 options,
@@ -451,7 +451,7 @@ public class CryptoClient {
         AccessReason accessReason = updateEncryptedParams.getAccessReason() != null ? updateEncryptedParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         return this.cryptoApi.updateEncrypted(
-                StringUtils.isNotEmpty(updateEncryptedParams.getCollection()) ? updateEncryptedParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(updateEncryptedParams.getCollection()) ? updateEncryptedParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 updateEncryptionRequests,
                 options,
@@ -521,7 +521,7 @@ public class CryptoClient {
         AccessReason accessReason = hashParams.getAccessReason() != null ? hashParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         List<TokenValue> tokenValues = this.cryptoApi.hashObjects(
-                StringUtils.isNotEmpty(hashParams.getCollection()) ? hashParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(hashParams.getCollection()) ? hashParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 ImmutableList.of(hashObjectRequest),
                 accessReason.getAdhocReason(),
@@ -589,7 +589,7 @@ public class CryptoClient {
         AccessReason accessReason = hashParams.getAccessReason() != null ? hashParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         return this.cryptoApi.hashObjects(
-                StringUtils.isNotEmpty(hashParams.getCollection()) ? hashParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(hashParams.getCollection()) ? hashParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 hashObjectRequests,
                 accessReason.getAdhocReason(),

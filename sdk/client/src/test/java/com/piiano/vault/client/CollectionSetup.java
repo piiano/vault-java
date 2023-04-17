@@ -11,7 +11,7 @@ import java.util.Collections;
 
 public class CollectionSetup {
 
-    private static final String collectionName = "users";
+    public static final String collectionName = "users_test";
 
     public static void setUp() throws ApiException {
         addCollection();
