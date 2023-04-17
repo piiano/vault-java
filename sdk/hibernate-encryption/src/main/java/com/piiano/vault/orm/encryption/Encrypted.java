@@ -8,15 +8,13 @@ import org.hibernate.usertype.UserType;
 
 import javax.persistence.Column;
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class is used to tokenize a field of an entity. it implements the UserType interface
@@ -90,6 +88,9 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 
 		try {
 			String value = rs.getString(names[0]);
+
+			saveEncryptedValueOnOwner(owner, value);
+
 			if (encryptor.isEncrypted(value)) {
 				value = encryptor.decrypt(value).toString();
 			}
@@ -149,5 +150,19 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 		}
 
 		encryptor = new Encryptor(encryptionType, collection, propertyName);
+	}
+
+	private void saveEncryptedValueOnOwner(Object owner, String encryptedValue) throws IllegalAccessException {
+		Class<?> clazz = owner.getClass();
+		Optional<Field> propertyField = Arrays.stream(clazz.getDeclaredFields())
+			.filter(f -> f.getName().equals(encryptor.getPropertyName()))
+			.collect(Collectors.toList())
+			.stream().findFirst();
+
+		if (! propertyField.isPresent()) {
+			Field field = propertyField.get();
+			field.setAccessible(true);
+			field.set(owner, encryptedValue);
+		}
 	}
 }

@@ -55,14 +55,14 @@ To enable interactive mode, run `./run.sh -i`. In this mode you will need to pre
     create user 'springuser'@'%' identified by 'userpass';
     grant all on app_db.* to 'springuser'@'%';
     ```
-    Noe that the app connects to mysql using configuration in src/main/resources/application.properties
+    Note that the app connects to mysql using configuration in src/main/resources/application.properties
     ```
       spring.datasource.url=jdbc:mysql://localhost:3306/app_db
       spring.datasource.username=springuser
       spring.datasource.password=userpass
     ```
 1. Install Piiano vault
-   1. Install Piiano Vault dokcer image by following the first step of the [get-started](https://piiano.com/docs/guides/get-started) guide.
+   1. Install the Piiano Vault docker image by following the first step of the [get-started](https://piiano.com/docs/guides/get-started) guide.
    2. Create a collection for the customer's sensitive data
     ```
     pvault collection add --collection-pvschema "
@@ -79,3 +79,35 @@ To enable interactive mode, run `./run.sh -i`. In this mode you will need to pre
     ```
     http://localhost:8090/add-customer?name=${name}&email=${email}&phone=${phone}&ssn=${ssn}&dob=${dob}&state=${state}
     ```
+
+### Vault ORM Annotations
+
+The hibernate-encryption jar contains the following annotations that you can use to integrate your entities seamlessly with Vault:
+- `@Type(type = "Encrypted")` - marks a field as encrypted.  
+   The field will be encrypted when persisted to the DB and decrypted when retrieved from the DB.  
+   You can optionally specify the name of the collection to use for encryption like so:  
+   `@Type(type = "Encrypted", parameters = {@Parameter(name = COLLECTION, value = "customers")})`  
+   If the collection name is not specified, the name of the Table specified in the `@Table` annotation will be used.
+- `@Transformation` - marks a field as a transformation of an encrypted property. 
+   The field will be automatically be decrypted and transformed by Vault when retrieved from the DB.  
+   You must specify the name of the encrypted property whose value will be transformed and the transformer to apply like so:   
+   `@Transformation(property = "email", transformer = "mask")`  
+   This will decrypt the encrypted value of the `email` property and apply the `mask` transformer to it.  
+   Note: You must also apply the `@Transient` annotation to the field so that it is not persisted to the DB.
+
+In order to use the `@Transformation` annotation, you must inject the `TransformerInterceptor` bean into your application context.
+This can be done by adding the following to your Spring configuration:
+
+```java
+@Configuration
+@ComponentScan(" com.piiano.vault.orm.encryption")
+public class InterceptorConfig {
+    @Bean
+    public HibernatePropertiesCustomizer hibernatePropertiesCustomizer(TransformationInterceptor interceptor) {
+        return props -> props.put("hibernate.session_factory.interceptor", interceptor);
+    }
+}
+```
+
+`TransformerInterceptor` intercepts the loading of all entities from the DB and decrypts and transforms the fields marked with the `@Transformation` annotation.
+It is not required if you are not using the `@Transformation` annotation in any field.

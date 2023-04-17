@@ -7,6 +7,7 @@ import com.piiano.vault.client.model.AccessReason;
 import com.piiano.vault.client.model.DefaultParams;
 import com.piiano.vault.client.openapi.ApiException;
 import com.piiano.vault.client.openapi.model.*;
+import lombok.Getter;
 
 import java.util.Collections;
 
@@ -20,9 +21,8 @@ public class Encryptor {
 
 	private final EncryptionType encryptionType;
 
+	@Getter
 	private final String propertyName;
-
-	private final String requestedProperty;
 
 	public Encryptor(EncryptionType encryptionType, String collection, String propertyName) {
 
@@ -31,14 +31,7 @@ public class Encryptor {
 				.accessReason(AccessReason.AppFunctionality).build());
 
 		this.encryptionType = encryptionType;
-
-		this.requestedProperty = propertyName;
-
-		if (!propertyName.contains(".")) {
-			this.propertyName = propertyName;
-		} else {
-			this.propertyName = propertyName.substring(0, propertyName.indexOf("."));
-		}
+		this.propertyName = propertyName;
 	}
 
 	public boolean isEncrypted(String propValue) {
@@ -71,12 +64,12 @@ public class Encryptor {
 		}
 
 		DecryptionRequest request = new DecryptionRequest().encryptedObject(
-				new EncryptedObjectInput().ciphertext(ciphertext)).props(ImmutableList.of(this.requestedProperty));
+				new EncryptedObjectInput().ciphertext(ciphertext)).props(ImmutableList.of(this.propertyName));
 
 		DecryptedObject decrypted = this.cryptoClient.decrypt(request, Collections.emptySet());
 
 		if (decrypted != null) {
-			return decrypted.getFields().get(this.requestedProperty);
+			return decrypted.getFields().get(this.propertyName);
 		}
 		return null;
 	}
