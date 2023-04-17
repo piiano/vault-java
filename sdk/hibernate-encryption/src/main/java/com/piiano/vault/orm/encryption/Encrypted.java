@@ -159,7 +159,7 @@ public class Encrypted implements UserType, DynamicParameterizedType {
 			.collect(Collectors.toList())
 			.stream().findFirst();
 
-		if (! propertyField.isPresent()) {
+		if (propertyField.isPresent()) {
 			Field field = propertyField.get();
 			field.setAccessible(true);
 			field.set(owner, encryptedValue);
