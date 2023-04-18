@@ -79,7 +79,6 @@ jobs:
           source VERSION
           cd examples/demo-app-hibernate-encryption
           sed -i "s/<vault-java\.version>$PUBLISH_VERSION/<vault-java\.version>${{ inputs.publish_version }}/g" pom.xml
-          sed -i "s/DOCKER_TAG=\"$VAULT_VERSION/DOCKER_TAG=\"${{ inputs.vault_version }}/g" run.sh
 
       - name: Update VERSION file
         run: echo -e 'PUBLISH_VERSION="${{ inputs.publish_version }}"\nVAULT_VERSION="${{ inputs.vault_version }}"' > VERSION
@@ -88,6 +87,6 @@ jobs:
         run: |
           git config --global user.email "cicd@piiano.com"
           git config --global user.name "Github Actions"
-          git add VERSION sdk/client/pom.xml sdk/hibernate-encryption/pom.xml sdk/config.yaml sdk/Makefile examples/demo-app-hibernate-encryption/pom.xml examples/demo-app-hibernate-encryption/run.sh
+          git add VERSION sdk/client/pom.xml sdk/hibernate-encryption/pom.xml sdk/config.yaml sdk/Makefile examples/demo-app-hibernate-encryption/pom.xml
           git commit -m "Update publish version to ${{ inputs.publish_version }} and vault version to ${{ inputs.vault_version }}"
           git push

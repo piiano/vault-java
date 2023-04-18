@@ -15,9 +15,10 @@ export MYSQL_PORT=${MYSQL_PORT:-3306}
 DOCKER_LOCALHOST=${DOCKER_LOCALHOST:-host.docker.internal} # or use 172.17.0.1
 
 # Vault
-DOCKER_TAG="1.3.1"
+source ../../VERSION
+echo Running with vault version: "$VAULT_VERSION"
 export PVAULT_PORT=${PVAULT_PORT:-8123}
-PVAULT_CLI="docker run --rm -i -v $(pwd):/pwd -w /pwd -e PVAULT_ADDR=http://${DOCKER_LOCALHOST}:${PVAULT_PORT} piiano/pvault-cli:${DOCKER_TAG}"
+PVAULT_CLI="docker run --rm -i -v $(pwd):/pwd -w /pwd -e PVAULT_ADDR=http://${DOCKER_LOCALHOST}:${PVAULT_PORT} piiano/pvault-cli:${VAULT_VERSION}"
 
 # Run as root and also wait allow for time until mysql is up
 function mysql_cmd_initial()
@@ -157,8 +158,8 @@ mysql_cmd true "create database app_db; create user '${MYSQL_USER}'@'%' identifi
 
 # start vault
 debug "starting vault"
-docker run --rm --name pvault-dev -p ${PVAULT_PORT}:8123 \
-	-e PVAULT_SERVICE_LICENSE=${PVAULT_SERVICE_LICENSE} -d piiano/pvault-dev:${DOCKER_TAG}
+docker run --rm --name pvault-dev -p "${PVAULT_PORT}":8123 \
+	-e PVAULT_SERVICE_LICENSE="${PVAULT_SERVICE_LICENSE}" -d piiano/pvault-dev:"${VAULT_VERSION}"
 
 # check for Vault version to ensure it is up - TBD
 until ${PVAULT_CLI} version > /dev/null 2>&1
@@ -180,7 +181,7 @@ customers PERSONS (
 # run the app
 debug "Running the spring app: java -jar ~/.m2/repository/com/piiano/example/demo-app-hibernate-encryption/0.0.1-SNAPSHOT/demo-app-hibernate-encryption-0.0.1-SNAPSHOT.jar"
 java -jar ~/.m2/repository/com/piiano/example/demo-app-hibernate-encryption/0.0.1-SNAPSHOT/demo-app-hibernate-encryption-0.0.1-SNAPSHOT.jar \
-	--server.port=${APP_PORT} --spring.datasource.url=jdbc:mysql://localhost:${MYSQL_PORT}/app_db &
+	--server.port="${APP_PORT}" --spring.datasource.url=jdbc:mysql://localhost:"${MYSQL_PORT}"/app_db &
 
 until curl -s "${BASE_URL}/all"
 do
