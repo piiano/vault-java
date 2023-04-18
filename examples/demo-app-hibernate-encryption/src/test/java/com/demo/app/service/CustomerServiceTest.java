@@ -49,7 +49,7 @@ class CustomerServiceTest {
         assertEquals("John", actual.getName());
         assertEquals("123-45-6789", actual.getSsn());
         assertEquals("david@gmail.com", actual.getEmail());
-        assertEquals("+8-888-88888", actual.getPhone());
+        assertEquals("+888888888", actual.getPhone());
         assertEquals("CA", actual.getState());
         assertEquals("***-**-6789", actual.getSsnMask());
         assertEquals("d****@gmail.com", actual.getEmailMask());

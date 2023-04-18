@@ -8,7 +8,7 @@
   </a>
 </p>
 
-# Piiano vault ORM encryption
+# Piiano vault Hibernate encryption
 
 ## Compiling
 

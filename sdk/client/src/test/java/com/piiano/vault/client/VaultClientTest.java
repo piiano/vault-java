@@ -1,6 +1,5 @@
 package com.piiano.vault.client;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.piiano.vault.client.model.AccessReason;
 import com.piiano.vault.client.model.DefaultParams;
@@ -11,8 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
+import static com.piiano.vault.client.CollectionSetup.collectionName;
 import static com.piiano.vault.client.DefaultClient.getDefaultClient;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -21,7 +19,7 @@ public class VaultClientTest {
     private final ApiClient apiClient = getDefaultClient();
 
     private final VaultClient vaultClient = new VaultClient(apiClient,
-            DefaultParams.builder().collection("users").accessReason(AccessReason.AppFunctionality).build());
+            DefaultParams.builder().collection(collectionName).accessReason(AccessReason.AppFunctionality).build());
 
     @BeforeEach
     public void beforeEach() throws ApiException {
@@ -39,8 +37,8 @@ public class VaultClientTest {
                 .type(TokenType.DETERMINISTIC)
                 ._object(new InputObject().fields(ImmutableMap.of("name", "John")));
 
-        List<TokenValue> result = vaultClient.tokensClient().tokenize(ImmutableList.of(request));
-        assertNotNull(result.get(0).getTokenId());
+        TokenValue result = vaultClient.tokensClient().tokenize(request);
+        assertNotNull(result.getTokenId());
     }
 
     @Test

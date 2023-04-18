@@ -18,4 +18,6 @@ public class DefaultParams {
     private String expirationSecs;
 
     private boolean reloadCache;
+
+    private String transactionId;
 }

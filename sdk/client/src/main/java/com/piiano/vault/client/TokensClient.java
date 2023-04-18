@@ -1,11 +1,12 @@
 package com.piiano.vault.client;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.piiano.vault.client.model.*;
 import com.piiano.vault.client.openapi.ApiClient;
 import com.piiano.vault.client.openapi.ApiException;
 import com.piiano.vault.client.openapi.TokensApi;
 import com.piiano.vault.client.openapi.model.*;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,83 @@ public class TokensClient {
      * Tokenize
      * Creates a token that reference the values of an object's properties. The token ID is partially or wholly randomly-generated and, therefore, is not sensitive. Supports bulk operations.  The returned token IDs are in the same order as the object IDs in the request. No tokens are created if any object IDs are invalid or not found.  If this operation is called for an object ID and properties that have a token: - Any token tags are appended to the existing token. - If an expiration is specified, then the token expiry is updated. If an expiration is not specified, the token expiry is updated if the default settings result in an expiry date after the token's current expiry date.  The role performing this operation must have both of these: - The `CapTokensWriter` capability. - At least one allowing policy and no denying policies for the `tokenize` operation for each of the collection properties specified in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.
      * @param tokenizeRequest Details of the tokenization request. (required)
+     * @return TokenValue
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+    <table summary="Response Details" border="1">
+    <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+    <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
+    <tr><td> 400 </td><td> The request is invalid. </td><td>  -  </td></tr>
+    <tr><td> 401 </td><td> Authentication credentials are incorrect or missing. </td><td>  -  </td></tr>
+    <tr><td> 403 </td><td> The caller doesn't have the required access rights. </td><td>  -  </td></tr>
+    <tr><td> 404 </td><td> The collection, objects, or properties aren't found or are missing. </td><td>  -  </td></tr>
+    <tr><td> 409 </td><td> A conflict occurs. </td><td>  -  </td></tr>
+    <tr><td> 500 </td><td> An error occurs on the server. </td><td>  -  </td></tr>
+    <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
+    </table>
+     */
+    public TokenValue tokenize(TokenizeRequest tokenizeRequest) throws ApiException {
+
+        List<TokenValue> tokenValues = this.tokensApi.tokenize(
+                this.defaultParams.getCollection(),
+                this.defaultParams.getAccessReason().getReason(),
+                ImmutableList.of(tokenizeRequest),
+                this.defaultParams.getExpirationSecs(),
+                this.defaultParams.getTransactionId(),
+                this.defaultParams.getAccessReason().getAdhocReason(),
+                this.defaultParams.isReloadCache()
+        );
+
+        if (tokenValues.size() == 0) {
+            return null;
+        }
+        return tokenValues.get(0);
+    }
+
+    /**
+     * Tokenize
+     * Creates a token that reference the values of an object's properties. The token ID is partially or wholly randomly-generated and, therefore, is not sensitive. Supports bulk operations.  The returned token IDs are in the same order as the object IDs in the request. No tokens are created if any object IDs are invalid or not found.  If this operation is called for an object ID and properties that have a token: - Any token tags are appended to the existing token. - If an expiration is specified, then the token expiry is updated. If an expiration is not specified, the token expiry is updated if the default settings result in an expiry date after the token's current expiry date.  The role performing this operation must have both of these: - The `CapTokensWriter` capability. - At least one allowing policy and no denying policies for the `tokenize` operation for each of the collection properties specified in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.
+     * @param tokenizeRequest Details of the tokenization request. (required)
+     * @param tokenizeParams Additional params for the request.
+     * @return TokenValue
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+    <table summary="Response Details" border="1">
+    <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+    <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
+    <tr><td> 400 </td><td> The request is invalid. </td><td>  -  </td></tr>
+    <tr><td> 401 </td><td> Authentication credentials are incorrect or missing. </td><td>  -  </td></tr>
+    <tr><td> 403 </td><td> The caller doesn't have the required access rights. </td><td>  -  </td></tr>
+    <tr><td> 404 </td><td> The collection, objects, or properties aren't found or are missing. </td><td>  -  </td></tr>
+    <tr><td> 409 </td><td> A conflict occurs. </td><td>  -  </td></tr>
+    <tr><td> 500 </td><td> An error occurs on the server. </td><td>  -  </td></tr>
+    <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
+    </table>
+     */
+    public TokenValue tokenize(TokenizeRequest tokenizeRequest, TokenizeParams tokenizeParams) throws ApiException {
+
+        AccessReason accessReason = tokenizeParams.getAccessReason() != null ? tokenizeParams.getAccessReason() : this.defaultParams.getAccessReason();
+
+        List<TokenValue> tokenValues = this.tokensApi.tokenize(
+                !Strings.isNullOrEmpty(tokenizeParams.getCollection()) ? tokenizeParams.getCollection() : this.defaultParams.getCollection(),
+                accessReason.getReason(),
+                ImmutableList.of(tokenizeRequest),
+                !Strings.isNullOrEmpty(tokenizeParams.getExpirationSecs()) ? tokenizeParams.getExpirationSecs() : this.defaultParams.getExpirationSecs(),
+                !Strings.isNullOrEmpty(tokenizeParams.getTransactionId()) ? tokenizeParams.getTransactionId() : this.defaultParams.getTransactionId(),
+                accessReason.getAdhocReason(),
+                tokenizeParams.getReloadCache() != null ? tokenizeParams.getReloadCache() : this.defaultParams.isReloadCache()
+        );
+
+        if (tokenValues.size() == 0) {
+            return null;
+        }
+        return tokenValues.get(0);
+    }
+
+    /**
+     * Tokenize bulk
+     * Creates a token that reference the values of an object's properties. The token ID is partially or wholly randomly-generated and, therefore, is not sensitive. Supports bulk operations.  The returned token IDs are in the same order as the object IDs in the request. No tokens are created if any object IDs are invalid or not found.  If this operation is called for an object ID and properties that have a token: - Any token tags are appended to the existing token. - If an expiration is specified, then the token expiry is updated. If an expiration is not specified, the token expiry is updated if the default settings result in an expiry date after the token's current expiry date.  The role performing this operation must have both of these: - The `CapTokensWriter` capability. - At least one allowing policy and no denying policies for the `tokenize` operation for each of the collection properties specified in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.
+     * @param tokenizeRequests Details of the tokenization requests. (required)
      * @return List<TokenValue>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -47,22 +125,23 @@ public class TokensClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public List<TokenValue> tokenize(List<TokenizeRequest> tokenizeRequest) throws ApiException {
+    public List<TokenValue> tokenizeBulk(List<TokenizeRequest> tokenizeRequests) throws ApiException {
 
         return this.tokensApi.tokenize(
                 this.defaultParams.getCollection(),
                 this.defaultParams.getAccessReason().getReason(),
-                tokenizeRequest,
+                tokenizeRequests,
                 this.defaultParams.getExpirationSecs(),
+                this.defaultParams.getTransactionId(),
                 this.defaultParams.getAccessReason().getAdhocReason(),
                 this.defaultParams.isReloadCache()
         );
     }
 
     /**
-     * Tokenize
+     * Tokenize bulk
      * Creates a token that reference the values of an object's properties. The token ID is partially or wholly randomly-generated and, therefore, is not sensitive. Supports bulk operations.  The returned token IDs are in the same order as the object IDs in the request. No tokens are created if any object IDs are invalid or not found.  If this operation is called for an object ID and properties that have a token: - Any token tags are appended to the existing token. - If an expiration is specified, then the token expiry is updated. If an expiration is not specified, the token expiry is updated if the default settings result in an expiry date after the token's current expiry date.  The role performing this operation must have both of these: - The `CapTokensWriter` capability. - At least one allowing policy and no denying policies for the `tokenize` operation for each of the collection properties specified in the call.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.
-     * @param tokenizeRequest Details of the tokenization request. (required)
+     * @param tokenizeRequests Details of the tokenization requests. (required)
      * @param tokenizeParams Additional params for the request.
      * @return List<TokenValue>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -79,15 +158,16 @@ public class TokensClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public List<TokenValue> tokenize(List<TokenizeRequest> tokenizeRequest, TokenizeParams tokenizeParams) throws ApiException {
+    public List<TokenValue> tokenizeBulk(List<TokenizeRequest> tokenizeRequests, TokenizeParams tokenizeParams) throws ApiException {
 
         AccessReason accessReason = tokenizeParams.getAccessReason() != null ? tokenizeParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         return this.tokensApi.tokenize(
-                StringUtils.isNotEmpty(tokenizeParams.getCollection()) ? tokenizeParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(tokenizeParams.getCollection()) ? tokenizeParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
-                tokenizeRequest,
-                tokenizeParams.getExpirationSecs(),
+                tokenizeRequests,
+                !Strings.isNullOrEmpty(tokenizeParams.getExpirationSecs()) ? tokenizeParams.getExpirationSecs() : this.defaultParams.getExpirationSecs(),
+                !Strings.isNullOrEmpty(tokenizeParams.getTransactionId()) ? tokenizeParams.getTransactionId() : this.defaultParams.getTransactionId(),
                 accessReason.getAdhocReason(),
                 tokenizeParams.getReloadCache() != null ? tokenizeParams.getReloadCache() : this.defaultParams.isReloadCache()
         );
@@ -154,7 +234,7 @@ public class TokensClient {
         AccessReason accessReason = detokenizeParams.getAccessReason() != null ? detokenizeParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         return this.tokensApi.detokenize(
-                StringUtils.isNotEmpty(detokenizeParams.getCollection()) ? detokenizeParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(detokenizeParams.getCollection()) ? detokenizeParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 queryToken.getObjectIds(), queryToken.getTags() , queryToken.getTokenIds(),
                 props,
@@ -222,7 +302,7 @@ public class TokensClient {
         AccessReason accessReason = searchTokensParams.getAccessReason() != null ? searchTokensParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         return this.tokensApi.searchTokens(
-                StringUtils.isNotEmpty(searchTokensParams.getCollection()) ? searchTokensParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(searchTokensParams.getCollection()) ? searchTokensParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 queryToken,
                 options,
@@ -291,7 +371,7 @@ public class TokensClient {
         AccessReason accessReason = updateTokensParams.getAccessReason() != null ? updateTokensParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         this.tokensApi.updateTokens(
-                StringUtils.isNotEmpty(updateTokensParams.getCollection()) ? updateTokensParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(updateTokensParams.getCollection()) ? updateTokensParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 updateTokenRequest,
                 updateTokensParams.getExpirationSecs(),
@@ -358,7 +438,7 @@ public class TokensClient {
         AccessReason accessReason = deleteTokensParams.getAccessReason() != null ? deleteTokensParams.getAccessReason() : this.defaultParams.getAccessReason();
 
         this.tokensApi.deleteTokens(
-                StringUtils.isNotEmpty(deleteTokensParams.getCollection()) ? deleteTokensParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(deleteTokensParams.getCollection()) ? deleteTokensParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 queryToken.getObjectIds(), queryToken.getTags() , queryToken.getTokenIds(),
                 options,
@@ -423,7 +503,7 @@ public class TokensClient {
 
         return this.tokensApi.rotateTokens(
                 tokenIds,
-                StringUtils.isNotEmpty(rotateTokensParams.getCollection()) ? rotateTokensParams.getCollection() : this.defaultParams.getCollection(),
+                !Strings.isNullOrEmpty(rotateTokensParams.getCollection()) ? rotateTokensParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 accessReason.getAdhocReason(),
                 rotateTokensParams.getReloadCache() != null ? rotateTokensParams.getReloadCache() : this.defaultParams.isReloadCache()
