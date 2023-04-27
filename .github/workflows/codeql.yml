@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: CodeQL
 
 on:
   push:
@@ -37,8 +37,8 @@ jobs:
       - name: Install java
         uses: actions/setup-java@v3
         with:
-          java-version: "19"
-          distribution: "zulu"
+          java-version: 8
+          distribution: zulu
           cache: maven
 
       - name: Prepare.

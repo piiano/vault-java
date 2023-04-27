@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
 
-VAULT_VERSION ?= 1.3.1
+VAULT_VERSION ?= 1.4.0
 OPENAPI_YAML := openapi.yaml
 GEN_FOLDER := openapi
 CLIENT_FOLDER := client

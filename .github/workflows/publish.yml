@@ -31,8 +31,8 @@ jobs:
         uses: actions/setup-java@v3
         with: # running setup-java again overwrites the settings.xml
           java-version: 8
-          distribution: 'zulu'
-          cache: 'maven'
+          distribution: zulu
+          cache: maven
           server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
           server-username: OSSRH_USERNAME # env variable for username in deploy
           server-password: OSSRH_TOKEN # env variable for token in deploy
@@ -59,14 +59,14 @@ jobs:
         working-directory: sdk/openapi
         run: mvn clean install -B -DskipTests
 
-#      - name: Publish openapi
-#        if: inputs.bump-package != 'none'
-#        working-directory: sdk/openapi
-#        run: mvn clean deploy -B -P sign-artifacts -DskipTests
-#        env:
-#          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-#          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
-#          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+      - name: Publish openapi
+        if: inputs.bump-package != 'none'
+        working-directory: sdk/openapi
+        run: mvn clean deploy -B -P sign-artifacts -DskipTests
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
       - name: Update version of client pom.xml
         if: inputs.bump-package != 'none'
@@ -119,29 +119,44 @@ jobs:
           sed -i "s/<vault-java\.version>$PUBLISH_VERSION/<vault-java\.version>${NEW_PUBLISH_VERSION}/g" pom.xml
 
       - name: Update README files
-        if: inputs.bump-package != 'none'
         run: |
           source VERSION
           sed -i "s/compatible with Vault ${VAULT_VERSION}/compatible with Vault ${{ inputs.vault_version }}/g" sdk/README.md sdk/client/README.md sdk/hibernate-encryption/README.md
 
       - name: Update VERSION file
-        if: inputs.bump-package != 'none'
         run: |
+          set -x
           source VERSION
-          NEW_PUBLISH_VERSION=`npx --yes semver -i ${{ inputs.bump-package }} ${PUBLISH_VERSION}`
+          NEW_PUBLISH_VERSION=`npx --yes semver -i minor ${PUBLISH_VERSION}`
           echo -e 'PUBLISH_VERSION="${NEW_PUBLISH_VERSION}"\nVAULT_VERSION="${{ inputs.vault_version }}"' > VERSION
 
+#          source VERSION
+#          NEW_PUBLISH_VERSION=`npx --yes semver -i ${{ inputs.bump-package }} ${PUBLISH_VERSION}`
+#          echo -e 'PUBLISH_VERSION="${NEW_PUBLISH_VERSION}"\nVAULT_VERSION="${{ inputs.vault_version }}"' > VERSION
+
       - name: Commit version changes and push
-        if: inputs.bump-package != 'none'
         run: |
           git config --global user.email "cicd@piiano.com"
           git config --global user.name "Github Actions"
           git add VERSION
-          git add sdk/client/pom.xml
-          git add sdk/hibernate-encryption/pom.xml
-          git add sdk/config.yaml
-          git add sdk/Makefile
-          git add examples/demo-app-hibernate-encryption/pom.xml
+          git add sdk/README.md
+          git add sdk/client/README.md
+          git add sdk/hibernate-encryption/README.md
           source VERSION
           git commit -m "Update publish version to ${PUBLISH_VERSION} and vault version to ${VAULT_VERSION}"
           git push
+#  run: |
+#          git config --global user.email "cicd@piiano.com"
+#          git config --global user.name "Github Actions"
+#          git add VERSION
+#          git add sdk/config.yaml
+#          git add sdk/Makefile
+#          git add sdk/README.md
+#          git add sdk/client/pom.xml
+#          git add sdk/client/README.md
+#          git add sdk/hibernate-encryption/pom.xml
+#          git add sdk/hibernate-encryption/README.md
+#          git add examples/demo-app-hibernate-encryption/pom.xml
+#          source VERSION
+#          git commit -m "Update publish version to ${PUBLISH_VERSION} and vault version to ${VAULT_VERSION}"
+#          git push
