@@ -29,7 +29,7 @@ public class CollectionSetup {
         deleteCollectionIfExists();
 
         Collection collection = createCollection();
-        return collectionsApi.addCollection(collection, "json", Collections.emptyList());
+        return collectionsApi.addCollection(collection, "json", Collections.emptySet());
     }
 
     private static void deleteCollectionIfExists() {

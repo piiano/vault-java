@@ -10,6 +10,8 @@
 
 # Piiano vault Hibernate encryption
 
+This package is compatible with Vault 1.3.1
+
 ## Compiling
 
 Run: `mvn clean install -DskipTests`

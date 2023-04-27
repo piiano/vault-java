@@ -12,6 +12,8 @@
 
 This folder contains SDKs that connect to the Vault.
 
+This package is compatible with Vault 1.3.1
+
 ## Compiling
 
 Run: `make`

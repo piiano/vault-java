@@ -10,7 +10,7 @@
 
 # vault-client
 
-Version 1.0.15 works with vault 1.3.1
+This package is compatible with Vault 1.3.1
 
 ## Compiling
 

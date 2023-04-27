@@ -12,8 +12,7 @@
 
 **The secure home for sensitive personal data**
 
-Safely store sensitive personal data in your own cloud environment with automated compliance controls.  
-[More details](#about-piiano-vault)
+Safely store sensitive personal data in your own cloud environment with automated compliance controls. [More details](#about-piiano-vault)
 
 # Vault-java
 
