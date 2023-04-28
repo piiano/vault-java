@@ -119,6 +119,7 @@ jobs:
           sed -i "s/<vault-java\.version>$PUBLISH_VERSION/<vault-java\.version>${NEW_PUBLISH_VERSION}/g" pom.xml
 
       - name: Update README files
+        if: inputs.bump-package != 'none'
         run: |
           source VERSION
           sed -i "s/compatible with Vault ${VAULT_VERSION}/compatible with Vault ${{ inputs.vault_version }}/g" sdk/README.md sdk/client/README.md sdk/hibernate-encryption/README.md
@@ -128,7 +129,7 @@ jobs:
           set -x
           source VERSION
           NEW_PUBLISH_VERSION=`npx --yes semver -i minor ${PUBLISH_VERSION}`
-          echo -e 'PUBLISH_VERSION="${NEW_PUBLISH_VERSION}"\nVAULT_VERSION="${{ inputs.vault_version }}"' > VERSION
+          echo -e 'PUBLISH_VERSION="$NEW_PUBLISH_VERSION"\nVAULT_VERSION="${{ inputs.vault_version }}"' > VERSION
 
 #          source VERSION
 #          NEW_PUBLISH_VERSION=`npx --yes semver -i ${{ inputs.bump-package }} ${PUBLISH_VERSION}`
@@ -139,9 +140,6 @@ jobs:
           git config --global user.email "cicd@piiano.com"
           git config --global user.name "Github Actions"
           git add VERSION
-          git add sdk/README.md
-          git add sdk/client/README.md
-          git add sdk/hibernate-encryption/README.md
           source VERSION
           git commit -m "Update publish version to ${PUBLISH_VERSION} and vault version to ${VAULT_VERSION}"
           git push
