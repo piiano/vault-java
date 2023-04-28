@@ -129,7 +129,7 @@ jobs:
           set -x
           source VERSION
           NEW_PUBLISH_VERSION=`npx --yes semver -i minor ${PUBLISH_VERSION}`
-          echo -e 'PUBLISH_VERSION=\"${NEW_PUBLISH_VERSION}\"\nVAULT_VERSION="${{ inputs.vault_version }}"' > VERSION
+          echo -e "PUBLISH_VERSION=$NEW_PUBLISH_VERSION\nVAULT_VERSION=${{ inputs.vault_version }}" > VERSION
 
 #          source VERSION
 #          NEW_PUBLISH_VERSION=`npx --yes semver -i ${{ inputs.bump-package }} ${PUBLISH_VERSION}`
