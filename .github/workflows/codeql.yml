@@ -1,4 +1,5 @@
 name: CodeQL
+run-name: ${{ github.workflow }} (${{ github.head_ref || github.ref_name }})
 
 on:
   push:
@@ -42,7 +43,8 @@ jobs:
           cache: maven
 
       - name: Prepare.
-        run: cd sdk && make
+        working-directory: sdk
+        run: make
         
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
