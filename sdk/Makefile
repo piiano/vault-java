@@ -1,13 +1,14 @@
 .DEFAULT_GOAL := all
 
-VAULT_VERSION ?= 1.3.1
+VAULT_VERSION ?= 1.4.0
 OPENAPI_YAML := openapi.yaml
+CODEGEN_IMAGE := openapitools/openapi-generator-cli:v6.4.0
+CODEGEN_CONFIG_FILE := config.yaml
 GEN_FOLDER := openapi
 CLIENT_FOLDER := client
 HIBERNATE_FOLDER := hibernate-encryption
 APP_FOLDER := ../examples/demo-app-hibernate-encryption
-CODEGEN_IMAGE := openapitools/openapi-generator-cli:v6.4.0
-CODEGEN_CONFIG_FILE := config.yaml
+
 
 $(OPENAPI_YAML):
 	curl https://piiano.com/docs/v$(subst .,-,$(VAULT_VERSION))/assets/openapi.yaml --output $@
@@ -18,6 +19,21 @@ $(GEN_FOLDER)/pom.xml: $(OPENAPI_YAML) $(CODEGEN_CONFIG_FILE)
             -i /pwd/$(OPENAPI_YAML) \
             -c /pwd/$(CODEGEN_CONFIG_FILE) \
             -o /pwd/$(GEN_FOLDER)
+
+.PHONY: generate-openapi
+generate-openapi: $(OPENAPI_YAML) $(GEN_FOLDER)/pom.xml
+
+.PHONY: $(CLIENT_FOLDER)
+$(CLIENT_FOLDER): generate-openapi
+	mvn -f $(CLIENT_FOLDER) clean install -DskipTests
+
+.PHONY: $(HIBERNATE_FOLDER)
+$(HIBERNATE_FOLDER): $(CLIENT_FOLDER)
+	mvn -f $(HIBERNATE_FOLDER) clean install -DskipTests
+
+.PHONE: $(APP_FOLDER)
+$(APP_FOLDER): $(HIBERNATE_FOLDER)
+	mvn -f $(APP_FOLDER) clean install -DskipTests
 
 .PHONY: run-vault
 run-vault:
@@ -34,47 +50,32 @@ run-vault:
 		 piiano/pvault-dev:$(VAULT_VERSION)
 	sleep 5
 
-.PHONY: generate-openapi
-generate-openapi: $(OPENAPI_YAML) $(GEN_FOLDER)/pom.xml
-
-.PHONY: $(CLIENT_FOLDER)
-$(CLIENT_FOLDER): generate-openapi
-	cd client && mvn clean install -DskipTests && cd -
-
-.PHONY: $(HIBERNATE_FOLDER)
-$(HIBERNATE_FOLDER): $(CLIENT_FOLDER)
-	cd hibernate-encryption && mvn clean install -DskipTests && cd -
-
-.PHONE: $(APP_FOLDER)
-$(APP_FOLDER): $(HIBERNATE_FOLDER)
-	cd $(APP_FOLDER) && mvn clean install -DskipTests && cd -
-
-.PHONY: all
-all: $(APP_FOLDER)
-
 .PHONY: test-openapi
-test-openapi: run-vault $(CLIENT_FOLDER)
-	cd $(GEN_FOLDER) && mvn -X test && cd -
+test-openapi: generate-openapi
+	mvn -f $(GEN_FOLDER) test
 
 .PHONY: test-client
-test-client: run-vault $(CLIENT_FOLDER)
-	cd $(CLIENT_FOLDER) && mvn test && cd -
+test-client: $(CLIENT_FOLDER)
+	mvn -f $(CLIENT_FOLDER) test
 
 .PHONY: test-hibernate
-test-hibernate: run-vault $(HIBERNATE_FOLDER)
-	cd $(HIBERNATE_FOLDER) && mvn test && cd -
+test-hibernate: $(HIBERNATE_FOLDER)
+	mvn -f $(HIBERNATE_FOLDER) test
 
 .PHONE: test-app
-test-app: run-vault $(APP_FOLDER)
-	cd ../examples/demo-app-hibernate-encryption && mvn test && cd -
+test-app: $(APP_FOLDER)
+	mvn -f $(APP_FOLDER) test
 
-.PHONY: test
-test: run-vault test-hibernate test-client test-openapi
+.PHONY: test-all
+test-all: test-openapi run-vault test-client test-hibernate test-app
 
 .PHONY: clean
 clean:
-	cd $(CLIENT_FOLDER) && mvn clean && cd -
-	cd $(HIBERNATE_FOLDER) && mvn clean && cd -
-	cd $(GEN_FOLDER) && mvn clean && cd -
+	mvn -f $(CLIENT_FOLDER) clean
+	mvn -f $(HIBERNATE_FOLDER) clean
+	mvn -f $(APP_FOLDER) clean
 	rm -f -r $(GEN_FOLDER)
 	rm -f $(OPENAPI_YAML)
+
+.PHONY: all
+all: $(APP_FOLDER)

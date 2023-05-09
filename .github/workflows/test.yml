@@ -1,37 +1,41 @@
 name: Test all
+run-name: ${{ github.workflow }} (${{ github.head_ref || github.ref_name }})
+
 on:
   push:
 
 jobs:
-  test-client:
+  test-sdk:
     runs-on: ubuntu-latest
+    services:
+      vault:
+        image: piiano/pvault-dev:latest
+        env:
+          PVAULT_SERVICE_LICENSE: ${{ secrets.PVAULT_SERVICE_LICENSE }}
+          PVAULT_SENTRY_ENABLE: true
+          PVAULT_LOG_CUSTOMER_IDENTIFIER: "piiano"
+          PVAULT_LOG_CUSTOMER_ENV: "VAULT-JAVA"
+        ports:
+          - 8123:8123
     steps:
-        - name: Checkout
-          uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-        - name: Install java
-          uses: actions/setup-java@v3
-          with:
-            java-version: '8'
-            distribution: 'zulu'
-            cache: maven
+      - name: Install java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 8
+          distribution: zulu
+          cache: maven
 
-        - name: Build all
-          run: |
-            make all
-          working-directory: sdk
+      - name: Build all
+        working-directory: sdk
+        run: make
 
-#        - name: Test openapi
-#          run: |
-#            make test-openapi
-#          working-directory: sdk
+      - name: Test client
+        working-directory: sdk/client
+        run: mvn test
 
-        - name: Test client
-          run: |
-            make test-client
-          working-directory: sdk
-
-        - name: Test hibernate-encryption
-          run: |
-            make test-hibernate
-          working-directory: sdk
+      - name: Test hibernate-encryption
+        working-directory: sdk/hibernate-encryption
+        run: mvn test

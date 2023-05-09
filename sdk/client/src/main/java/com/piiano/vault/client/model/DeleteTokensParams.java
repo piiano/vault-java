@@ -16,6 +16,11 @@ public class DeleteTokensParams {
     private String collection;
 
     /**
+     * tenantId The tenant ID of the owning object. (optional)
+     */
+    private String tenantId;
+
+    /**
      * accessReason Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false. (required)
      */
      private AccessReason accessReason;

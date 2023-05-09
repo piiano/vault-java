@@ -1,92 +1,158 @@
 name: Publish
+run-name: ${{ github.workflow }} (${{ github.head_ref || github.ref_name }})
+
 on:
   workflow_dispatch:
     inputs:
-      publish_version:
-        description: 'Package version to publish'
-        required: true
       vault_version:
-        description: 'Vault version'
+        description: Vault version
         required: true
+      bump-package:
+        description: Bump package version
+        type: choice
+        required: false
+        default: patch
+        options: [ none, patch, minor, major ]
 
 jobs:
   build-n-publish:
     runs-on: ubuntu-latest
+    services:
+      vault:
+        image: piiano/pvault-dev:${{ inputs.vault_version }}
+        env:
+          PVAULT_SERVICE_LICENSE: ${{ secrets.PVAULT_SERVICE_LICENSE }}
+          PVAULT_SENTRY_ENABLE: true
+          PVAULT_LOG_CUSTOMER_IDENTIFIER: "piiano"
+          PVAULT_LOG_CUSTOMER_ENV: "VAULT-JAVA"
+        ports:
+          - 8123:8123
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          # By default, the ref is the commit hash that triggered the original workflow.
+          # Meaning it is missing changes that are committed by the workflow itself.
+          # Explicitly set ref to the branch name, so we pull the latest changes committed by the CI.
+          ref: ${{ github.ref_name }}
+          token: ${{ secrets.CICD_RELEASES_PAT }}
 
       - name: Set up Java & Maven
         uses: actions/setup-java@v3
         with: # running setup-java again overwrites the settings.xml
           java-version: 8
-          distribution: 'zulu'
-          cache: 'maven'
+          distribution: zulu
+          cache: maven
           server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
           server-username: OSSRH_USERNAME # env variable for username in deploy
           server-password: OSSRH_TOKEN # env variable for token in deploy
           gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
 
-      - name: Generate openapi
+      - name: Calculate versions
+        id: versions
         run: |
           source VERSION
-          cd sdk
-          # update the generator config file with the required maven version
-          sed -i "s/artifactVersion:\s\"$PUBLISH_VERSION/artifactVersion: \"${{ inputs.publish_version }}/g" config.yaml
-          # update the makefile with the required vault version
-          sed -i "s/VAULT_VERSION\s?=\s$VAULT_VERSION/VAULT_VERSION ?= ${{ inputs.vault_version }}/g" Makefile
-          # generate Java sdk for the openapi
-          make generate-openapi
+          echo "old_vault_version=${VAULT_VERSION}" >> $GITHUB_OUTPUT
+          echo "old_package_version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
+          if [[ "${{ inputs.bump-package }}" != "none" ]]; then
+            echo "package_version=$(npx --yes semver -i ${{ inputs.bump-package }} ${PACKAGE_VERSION})" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Bump package version in config file for openapi
+        if: inputs.bump-package != 'none'
+        working-directory: sdk
+        run: |
+          sed -i "s/artifactVersion: \"${{ steps.versions.outputs.old_package_version }}/artifactVersion: \"${{ steps.versions.outputs.package_version }}/g" config.yaml
+
+      - name: Generate openapi
+        working-directory: sdk
+        run: |
+          make generate-openapi VAULT_VERSION=${{ inputs.vault_version }}
           sudo chmod 777 ./openapi
           git apply patches/*.patch
 
-      - name: Build and publish openapi
+      - name: Build & test openapi
         working-directory: sdk/openapi
-        run: |
-          mvn clean deploy -B -P sign-artifacts -DskipTests
+        run: mvn -B clean install
+
+      - name: Publish openapi
+        if: inputs.bump-package != 'none'
+        working-directory: sdk/openapi
+        run: mvn deploy -B -P sign-artifacts -DskipTests
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
-      - name: Update version of client pom.xml
+      - name: Bump version of client pom.xml
+        if: inputs.bump-package != 'none'
         working-directory: sdk/client
-        run: mvn versions:set -DnewVersion=${{ inputs.publish_version }}
+        run: mvn versions:set -DnewVersion=${{ steps.versions.outputs.package_version }}
 
-      - name: Build and publish client
+      - name: Build & test client
         working-directory: sdk/client
-        run: mvn clean deploy -B -P sign-artifacts -DskipTests
+        run: mvn -B clean install
+
+      - name: Publish client
+        if: inputs.bump-package != 'none'
+        working-directory: sdk/client
+        run: mvn deploy -B -P sign-artifacts -DskipTests
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
-      - name: Update version of hibernate-encryption pom.xml
+      - name: Bump version of hibernate-encryption pom.xml
+        if: inputs.bump-package != 'none'
         working-directory: sdk/hibernate-encryption
-        run: mvn versions:set -DnewVersion=${{ inputs.publish_version }}
+        run: mvn versions:set -DnewVersion=${{ steps.versions.outputs.package_version }}
 
-      - name: Build and publish hibernate-encryption
+      - name: Build & test hibernate-encryption
         working-directory: sdk/hibernate-encryption
-        run: mvn clean deploy -B -P sign-artifacts -DskipTests
+        run: mvn -B clean install
+
+      - name: Publish hibernate-encryption
+        if: inputs.bump-package != 'none'
+        working-directory: sdk/hibernate-encryption
+        run: mvn deploy -B -P sign-artifacts -DskipTests
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
       - name: Update demo-app-hibernate-encryption
-        run: |
-          source VERSION
-          cd examples/demo-app-hibernate-encryption
-          sed -i "s/<vault-java\.version>$PUBLISH_VERSION/<vault-java\.version>${{ inputs.publish_version }}/g" pom.xml
+        if: inputs.bump-package != 'none'
+        working-directory: examples/demo-app-hibernate-encryption
+        run: sed -i "s/<vault-java\.version>${{ steps.versions.outputs.old_package_version }}/<vault-java\.version>${{ steps.versions.outputs.package_version }}/g" pom.xml
+
+      - name: Update Makefile
+        if: inputs.bump-package != 'none'
+        working-directory: sdk
+        run: sed -i "s/VAULT_VERSION ?= ${{ steps.versions.outputs.old_vault_version }}/VAULT_VERSION ?= ${{ inputs.vault_version }}/g" Makefile
+
+      - name: Update README files
+        if: inputs.bump-package != 'none'
+        working-directory: sdk
+        run: sed -i "s/compatible with Vault ${{ steps.versions.outputs.old_vault_version }}/compatible with Vault ${{ inputs.vault_version }}/g" README.md client/README.md hibernate-encryption/README.md
 
       - name: Update VERSION file
-        run: echo -e 'PUBLISH_VERSION="${{ inputs.publish_version }}"\nVAULT_VERSION="${{ inputs.vault_version }}"' > VERSION
-
+        if: inputs.bump-package != 'none'
+        run: echo -e "PACKAGE_VERSION=${{ steps.versions.outputs.package_version }}\nVAULT_VERSION=${{ inputs.vault_version }}" > VERSION
+#
       - name: Commit version changes and push
+        if: inputs.bump-package != 'none'
         run: |
           git config --global user.email "cicd@piiano.com"
           git config --global user.name "Github Actions"
-          git add VERSION sdk/client/pom.xml sdk/hibernate-encryption/pom.xml sdk/config.yaml sdk/Makefile examples/demo-app-hibernate-encryption/pom.xml
-          git commit -m "Update publish version to ${{ inputs.publish_version }} and vault version to ${{ inputs.vault_version }}"
+          git add VERSION
+          git add sdk/config.yaml
+          git add sdk/Makefile
+          git add sdk/README.md
+          git add sdk/client/pom.xml
+          git add sdk/client/README.md
+          git add sdk/hibernate-encryption/pom.xml
+          git add sdk/hibernate-encryption/README.md
+          git add examples/demo-app-hibernate-encryption/pom.xml
+          git commit -m "Update publish version to ${{ steps.versions.outputs.package_version }} and vault version to ${{ inputs.vault_version }}"
           git push

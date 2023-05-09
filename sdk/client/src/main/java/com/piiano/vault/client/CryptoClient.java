@@ -333,7 +333,7 @@ public class CryptoClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public EncryptedValue updateEncrypted(UpdateEncryptionRequest updateEncryptionRequest, List<String> options) throws ApiException {
+    public EncryptedValue updateEncrypted(UpdateEncryptionRequest updateEncryptionRequest, Set<String> options) throws ApiException {
 
         List<EncryptedValue> encryptedValues = this.cryptoApi.updateEncrypted(
                 this.defaultParams.getCollection(),
@@ -372,7 +372,7 @@ public class CryptoClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public EncryptedValue updateEncrypted(UpdateEncryptionRequest updateEncryptionRequest, List<String> options, UpdateEncryptedParams updateEncryptedParams) throws ApiException {
+    public EncryptedValue updateEncrypted(UpdateEncryptionRequest updateEncryptionRequest, Set<String> options, UpdateEncryptedParams updateEncryptedParams) throws ApiException {
 
         AccessReason accessReason = updateEncryptedParams.getAccessReason() != null ? updateEncryptedParams.getAccessReason() : this.defaultParams.getAccessReason();
 
@@ -412,7 +412,7 @@ public class CryptoClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public List<EncryptedValue> updateEncryptedBulk(List<UpdateEncryptionRequest> updateEncryptionRequests, List<String> options) throws ApiException {
+    public List<EncryptedValue> updateEncryptedBulk(List<UpdateEncryptionRequest> updateEncryptionRequests, Set<String> options) throws ApiException {
 
         return this.cryptoApi.updateEncrypted(
                 this.defaultParams.getCollection(),
@@ -446,7 +446,7 @@ public class CryptoClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public List<EncryptedValue> updateEncryptedBulk(List<UpdateEncryptionRequest> updateEncryptionRequests, List<String> options, UpdateEncryptedParams updateEncryptedParams) throws ApiException {
+    public List<EncryptedValue> updateEncryptedBulk(List<UpdateEncryptionRequest> updateEncryptionRequests, Set<String> options, UpdateEncryptedParams updateEncryptedParams) throws ApiException {
 
         AccessReason accessReason = updateEncryptedParams.getAccessReason() != null ? updateEncryptedParams.getAccessReason() : this.defaultParams.getAccessReason();
 

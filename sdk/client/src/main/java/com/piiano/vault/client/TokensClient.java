@@ -10,6 +10,7 @@ import com.piiano.vault.client.openapi.model.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Client for the Tokens API.
@@ -194,7 +195,7 @@ public class TokensClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public List<DetokenizedToken> detokenize(QueryToken queryToken, List<String> props, List<String> options) throws ApiException {
+    public List<DetokenizedToken> detokenize(QueryToken queryToken, List<String> props, Set<String> options) throws ApiException {
 
         return this.tokensApi.detokenize(
                 this.defaultParams.getCollection(),
@@ -229,7 +230,7 @@ public class TokensClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public List<DetokenizedToken> detokenize(QueryToken queryToken, List<String> props, List<String> options, DetokenizeParams detokenizeParams) throws ApiException {
+    public List<DetokenizedToken> detokenize(QueryToken queryToken, List<String> props, Set<String> options, DetokenizeParams detokenizeParams) throws ApiException {
 
         AccessReason accessReason = detokenizeParams.getAccessReason() != null ? detokenizeParams.getAccessReason() : this.defaultParams.getAccessReason();
 
@@ -264,7 +265,7 @@ public class TokensClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public List<TokenMetadata> searchTokens(QueryToken queryToken, List<String> options) throws ApiException {
+    public List<TokenMetadata> searchTokens(QueryToken queryToken, Set<String> options) throws ApiException {
 
         return this.tokensApi.searchTokens(
                 this.defaultParams.getCollection(),
@@ -297,7 +298,7 @@ public class TokensClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public List<TokenMetadata> searchTokens(QueryToken queryToken, List<String> options, SearchTokensParams searchTokensParams) throws ApiException {
+    public List<TokenMetadata> searchTokens(QueryToken queryToken, Set<String> options, SearchTokensParams searchTokensParams) throws ApiException {
 
         AccessReason accessReason = searchTokensParams.getAccessReason() != null ? searchTokensParams.getAccessReason() : this.defaultParams.getAccessReason();
 
@@ -331,7 +332,7 @@ public class TokensClient {
         <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
      </table>
      */
-    public void updateTokens(UpdateTokenRequest updateTokenRequest, QueryToken queryToken, List<String> options) throws ApiException {
+    public void updateTokens(UpdateTokenRequest updateTokenRequest, QueryToken queryToken, Set<String> options) throws ApiException {
 
         this.tokensApi.updateTokens(
                 this.defaultParams.getCollection(),
@@ -366,7 +367,7 @@ public class TokensClient {
         <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
      </table>
      */
-    public void updateTokens(UpdateTokenRequest updateTokenRequest, QueryToken queryToken, List<String> options, UpdateTokensParams updateTokensParams) throws ApiException {
+    public void updateTokens(UpdateTokenRequest updateTokenRequest, QueryToken queryToken, Set<String> options, UpdateTokensParams updateTokensParams) throws ApiException {
 
         AccessReason accessReason = updateTokensParams.getAccessReason() != null ? updateTokensParams.getAccessReason() : this.defaultParams.getAccessReason();
 
@@ -384,7 +385,7 @@ public class TokensClient {
 
     /**
      * Delete tokens
-     * Deletes tokens.  The tokens to delete are those that match all the criteria in the `token_ids`, `object_ids`,  and `tags` parameters. If the token query finds no matches, the operation returns a 404 error. See [search tokens](search-tokens) for more details.  The role performing this operation must have both of these: - The `CapTokensWriter` capability. - At least one allowing policy and no denying policies for the `delete` operation for the `tokens` resource of the specified collection.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.
+     * Deletes tokens.  The tokens to delete are those that match all the criteria in the `token_ids`, `object_ids`,  and `tags` parameters. If the token query finds no matches, the operation returns a 404 error. tenant ID filter is null, can be set in DeleteTokensParams for the other method . See [search tokens](search-tokens) for more details.  The role performing this operation must have both of these: - The `CapTokensWriter` capability. - At least one allowing policy and no denying policies for the `delete` operation for the `tokens` resource of the specified collection.  See [identity and access management](/data-security/identity-and-access-management) for more information about how capabilities are used to control access to operations and policies are used to control access to data.
      * @param queryToken token_ids, object_ids, and tags to query the token. (required)
      * @param options Options for the operation. Options include: - `archived` – whether to delete only archived tokens. If not specified, delete only active tokens.  (optional)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -401,12 +402,13 @@ public class TokensClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public void deleteTokens(QueryToken queryToken, List<String> options) throws ApiException {
+    public void deleteTokens(QueryToken queryToken, Set<String> options) throws ApiException {
 
         this.tokensApi.deleteTokens(
                 this.defaultParams.getCollection(),
                 this.defaultParams.getAccessReason().getReason(),
                 queryToken.getObjectIds(), queryToken.getTags() , queryToken.getTokenIds(),
+                null,
                 options,
                 this.defaultParams.getAccessReason().getAdhocReason(),
                 this.defaultParams.isReloadCache()
@@ -433,7 +435,7 @@ public class TokensClient {
     <tr><td> 503 </td><td> The service is unavailable. </td><td>  -  </td></tr>
     </table>
      */
-    public void deleteTokens(QueryToken queryToken, List<String> options, DeleteTokensParams deleteTokensParams) throws ApiException {
+    public void deleteTokens(QueryToken queryToken, Set<String> options, DeleteTokensParams deleteTokensParams) throws ApiException {
 
         AccessReason accessReason = deleteTokensParams.getAccessReason() != null ? deleteTokensParams.getAccessReason() : this.defaultParams.getAccessReason();
 
@@ -441,6 +443,7 @@ public class TokensClient {
                 !Strings.isNullOrEmpty(deleteTokensParams.getCollection()) ? deleteTokensParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
                 queryToken.getObjectIds(), queryToken.getTags() , queryToken.getTokenIds(),
+                deleteTokensParams.getTenantId(),
                 options,
                 accessReason.getAdhocReason(),
                 deleteTokensParams.getReloadCache() != null ? deleteTokensParams.getReloadCache() : this.defaultParams.isReloadCache()
