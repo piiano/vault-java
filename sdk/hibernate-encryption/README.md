@@ -10,7 +10,7 @@
 
 # Piiano vault Hibernate encryption
 
-This package is compatible with Vault 1.4.0
+This package is compatible with Vault 1.5.0
 
 ## Compiling
 
