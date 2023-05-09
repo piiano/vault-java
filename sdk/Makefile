@@ -25,15 +25,15 @@ generate-openapi: $(OPENAPI_YAML) $(GEN_FOLDER)/pom.xml
 
 .PHONY: $(CLIENT_FOLDER)
 $(CLIENT_FOLDER): generate-openapi
-	cd client && mvn clean install -DskipTests && cd -
+	mvn -f $(CLIENT_FOLDER) clean install -DskipTests
 
 .PHONY: $(HIBERNATE_FOLDER)
 $(HIBERNATE_FOLDER): $(CLIENT_FOLDER)
-	cd hibernate-encryption && mvn clean install -DskipTests && cd -
+	mvn -f $(HIBERNATE_FOLDER) clean install -DskipTests
 
 .PHONE: $(APP_FOLDER)
 $(APP_FOLDER): $(HIBERNATE_FOLDER)
-	cd $(APP_FOLDER) && mvn clean install -DskipTests && cd -
+	mvn -f $(APP_FOLDER) clean install -DskipTests
 
 .PHONY: run-vault
 run-vault:
@@ -52,28 +52,28 @@ run-vault:
 
 .PHONY: test-openapi
 test-openapi: generate-openapi
-	cd $(GEN_FOLDER) && mvn test && cd -
+	mvn -f $(GEN_FOLDER) test
 
 .PHONY: test-client
 test-client: $(CLIENT_FOLDER)
-	cd $(CLIENT_FOLDER) && mvn test && cd -
+	mvn -f $(CLIENT_FOLDER) test
 
 .PHONY: test-hibernate
 test-hibernate: $(HIBERNATE_FOLDER)
-	cd $(HIBERNATE_FOLDER) && mvn test && cd -
+	mvn -f $(HIBERNATE_FOLDER) test
 
 .PHONE: test-app
 test-app: $(APP_FOLDER)
-	cd ../examples/demo-app-hibernate-encryption && mvn test && cd -
+	mvn -f $(APP_FOLDER) test
 
 .PHONY: test-all
 test-all: test-openapi run-vault test-client test-hibernate test-app
 
 .PHONY: clean
 clean:
-	cd $(CLIENT_FOLDER) && mvn clean && cd -
-	cd $(HIBERNATE_FOLDER) && mvn clean && cd -
-	cd $(GEN_FOLDER) && mvn clean && cd -
+	mvn -f $(CLIENT_FOLDER) clean
+	mvn -f $(HIBERNATE_FOLDER) clean
+	mvn -f $(APP_FOLDER) clean
 	rm -f -r $(GEN_FOLDER)
 	rm -f $(OPENAPI_YAML)
 
