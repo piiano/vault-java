@@ -39,7 +39,7 @@ public enum AccessReason {
 
     AccessReason(String reason) {
         this.reason = reason;
-        this.adhocReason = "";
+        this.adhocReason = null;
     }
 
     public AccessReason adhocReason(String adhocReason) {
