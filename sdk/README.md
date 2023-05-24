@@ -10,6 +10,10 @@
 
 # Piiano vault Java SDK
 
+
+![Workflow status badge](https://github.com/piiano/vault-java/actions/workflows/test.yml/badge.svg?branch=main)
+![Java version badge](https://img.shields.io/badge/java-8-blue)
+
 This folder contains SDKs that connect to the Vault.
 
 This package is compatible with Vault 1.6.0
