@@ -5,7 +5,7 @@
 
 	<groupId>com.piiano.vault</groupId>
 	<artifactId>hibernate-encryption</artifactId>
-	<version>1.1.5</version>
+	<version>1.1.6</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>Piiano hibernate encryption</description>
 	<url>https://github.com/piiano/vault-java/tree/main/sdk/hibernate-encryption</url>
