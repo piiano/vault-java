@@ -4,24 +4,26 @@ VAULT_VERSION ?= 1.7.0
 OPENAPI_YAML := openapi.yaml
 CODEGEN_IMAGE := openapitools/openapi-generator-cli:v6.4.0
 CODEGEN_CONFIG_FILE := config.yaml
-GEN_FOLDER := openapi
+OPENAPI_FOLDER := openapi
 CLIENT_FOLDER := client
 HIBERNATE_FOLDER := hibernate-encryption
 APP_FOLDER := ../examples/demo-app-hibernate-encryption
 
 
 $(OPENAPI_YAML):
-	curl -L https://piiano.com/docs/v$(subst .,-,$(VAULT_VERSION))/assets/openapi.yaml --output $@
+	curl -L https://docs.piiano.com/v$(subst .,-,$(VAULT_VERSION))/assets/openapi.yaml --output $@
 
-$(GEN_FOLDER)/pom.xml: $(OPENAPI_YAML) $(CODEGEN_CONFIG_FILE)
+$(OPENAPI_FOLDER)/pom.xml: $(OPENAPI_YAML) $(CODEGEN_CONFIG_FILE)
+	mkdir -p $(OPENAPI_FOLDER)/target
 	docker run --rm -v "${PWD}:/pwd" $(CODEGEN_IMAGE) generate \
             -g java \
             -i /pwd/$(OPENAPI_YAML) \
             -c /pwd/$(CODEGEN_CONFIG_FILE) \
-            -o /pwd/$(GEN_FOLDER)
+            -o /pwd/$(OPENAPI_FOLDER)
 
 .PHONY: generate-openapi
-generate-openapi: $(OPENAPI_YAML) $(GEN_FOLDER)/pom.xml
+generate-openapi: $(OPENAPI_YAML) $(OPENAPI_FOLDER)/pom.xml
+	mvn -f $(OPENAPI_FOLDER) clean install -DskipTests
 
 .PHONY: $(CLIENT_FOLDER)
 $(CLIENT_FOLDER): generate-openapi
@@ -31,7 +33,7 @@ $(CLIENT_FOLDER): generate-openapi
 $(HIBERNATE_FOLDER): $(CLIENT_FOLDER)
 	mvn -f $(HIBERNATE_FOLDER) clean install -DskipTests
 
-.PHONE: $(APP_FOLDER)
+.PHONY: $(APP_FOLDER)
 $(APP_FOLDER): $(HIBERNATE_FOLDER)
 	mvn -f $(APP_FOLDER) clean install -DskipTests
 
@@ -52,7 +54,7 @@ run-vault:
 
 .PHONY: test-openapi
 test-openapi: generate-openapi
-	mvn -f $(GEN_FOLDER) test
+	mvn -f $(OPENAPI_FOLDER) test
 
 .PHONY: test-client
 test-client: $(CLIENT_FOLDER)
@@ -74,7 +76,7 @@ clean:
 	mvn -f $(CLIENT_FOLDER) clean
 	mvn -f $(HIBERNATE_FOLDER) clean
 	mvn -f $(APP_FOLDER) clean
-	rm -f -r $(GEN_FOLDER)
+	rm -f -r $(OPENAPI_FOLDER)
 	rm -f $(OPENAPI_YAML)
 
 .PHONY: all
