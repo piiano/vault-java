@@ -20,7 +20,7 @@
 		<java.version>8</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<guava.version>31.1-jre</guava.version>
+		<guava.version>32.1.1-jre</guava.version>
 		<lombok.version>1.18.26</lombok.version>
 	</properties>
 
