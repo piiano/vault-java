@@ -11,7 +11,7 @@ APP_FOLDER := ../examples/demo-app-hibernate-encryption
 
 
 $(OPENAPI_YAML):
-	curl https://piiano.com/docs/v$(subst .,-,$(VAULT_VERSION))/assets/openapi.yaml --output $@
+	curl -L https://piiano.com/docs/v$(subst .,-,$(VAULT_VERSION))/assets/openapi.yaml --output $@
 
 $(GEN_FOLDER)/pom.xml: $(OPENAPI_YAML) $(CODEGEN_CONFIG_FILE)
 	docker run --rm -v "${PWD}:/pwd" $(CODEGEN_IMAGE) generate \
