@@ -36,7 +36,7 @@ public class TokensClient {
      * @param tokenizeRequest Details of the tokenization request. (required)
      * @return TokenValue
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code {@code @http.response.details}}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -74,7 +74,7 @@ public class TokensClient {
      * @param tokenizeParams Additional params for the request.
      * @return TokenValue
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -113,7 +113,7 @@ public class TokensClient {
      * @param tokenizeRequests Details of the tokenization requests. (required)
      * @return List<TokenValue>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -146,7 +146,7 @@ public class TokensClient {
      * @param tokenizeParams Additional params for the request.
      * @return List<TokenValue>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -182,7 +182,7 @@ public class TokensClient {
      * @param options Options for the operation. Options include: - `include_metadata` - show token metadata in the response.  (optional)
      * @return List<DetokenizedToken>;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -217,7 +217,7 @@ public class TokensClient {
      * @param detokenizeParams Additional params for the request.
      * @return List<DetokenizedToken>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -252,7 +252,7 @@ public class TokensClient {
      * @param options Options for the operation. Options include: - `archived` – whether to search only archived tokens. If not specified, search only active tokens.  (optional)
      * @return List<TokenMetadata>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -285,7 +285,7 @@ public class TokensClient {
      * @param searchTokensParams Additional params for the request.
      * @return List<TokenMetadata>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -319,7 +319,7 @@ public class TokensClient {
      * @param queryToken token_ids, object_ids, and tags to query the token. (required)
      * @param options Options for the operation. Options include: - `archived` – whether to update only archived tokens. If not specified, update only active tokens.  (optional)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
         <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -354,7 +354,7 @@ public class TokensClient {
      * @param options Options for the operation. Options include: - `archived` – whether to update only archived tokens. If not specified, update only active tokens.  (optional)
      * @param updateTokensParams Additional params for the request.
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code {@code @http.response.details}}
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
         <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -389,7 +389,7 @@ public class TokensClient {
      * @param queryToken token_ids, object_ids, and tags to query the token. (required)
      * @param options Options for the operation. Options include: - `archived` – whether to delete only archived tokens. If not specified, delete only active tokens.  (optional)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -422,7 +422,7 @@ public class TokensClient {
      * @param options Options for the operation. Options include: - `archived` – whether to delete only archived tokens. If not specified, delete only active tokens.  (optional)
      * @param deleteTokensParams Additional params for the request.
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code {@code @http.response.details}}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -456,7 +456,7 @@ public class TokensClient {
      * @param tokenIds Comma-separated list of token IDs. (required)
      * @return Map<String, String>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -487,7 +487,7 @@ public class TokensClient {
      * @param rotateTokensParams Additional params for the request.
      * @return Map<String, String>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>

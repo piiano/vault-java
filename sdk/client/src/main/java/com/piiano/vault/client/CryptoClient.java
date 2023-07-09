@@ -35,7 +35,7 @@ public class CryptoClient {
      * @param encryptionRequest Details of the encryption request. (required)
      * @return EncryptedValue
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -72,7 +72,7 @@ public class CryptoClient {
      * @param encryptParams Additional params for the request.
      * @return EncryptedValue
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -110,7 +110,7 @@ public class CryptoClient {
      * @param encryptionRequests Details of the encryption requests. (required)
      * @return List<EncryptedValue>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -142,7 +142,7 @@ public class CryptoClient {
      * @param encryptParams Additional params for the request.
      * @return List<EncryptedValue>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -176,7 +176,7 @@ public class CryptoClient {
      * @param options Options for the operation. Options include: - 'archived' – whether to decrypt only archived objects. If not specified, decrypts only active objects. - 'include_metadata' - show the encrypted object metadata.  (optional)
      * @return DecryptedObject
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -214,7 +214,7 @@ public class CryptoClient {
      * @param decryptParams Additional params for the request.
      * @return DecryptedObject
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -253,7 +253,7 @@ public class CryptoClient {
      * @param options Options for the operation. Options include: - 'archived' – whether to decrypt only archived objects. If not specified, decrypts only active objects. - 'include_metadata' - show the encrypted object metadata.  (optional)
      * @return List<DecryptedObject>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -286,7 +286,7 @@ public class CryptoClient {
      * @param decryptParams Additional params for the request.
      * @return List<DecryptedObject>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -320,7 +320,7 @@ public class CryptoClient {
      * @param options Options for the request. - &#x60;archived&#x60; - whether to update only archived encrypted objects. If not specified, update only active encrypted objects.  (optional)
      * @return EncryptedValue
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -359,7 +359,7 @@ public class CryptoClient {
      * @param updateEncryptedParams Additional params for the request.
      * @return EncryptedValue
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -399,7 +399,7 @@ public class CryptoClient {
      * @param options Options for the request. - &#x60;archived&#x60; - whether to update only archived encrypted objects. If not specified, update only active encrypted objects.  (optional)
      * @return List<EncryptedValue>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -433,7 +433,7 @@ public class CryptoClient {
      * @param updateEncryptedParams Additional params for the request.
      * @return List<EncryptedValue>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -467,7 +467,7 @@ public class CryptoClient {
      * @param hashObjectRequest Details of the hashing request. (required)
      * @return TokenValue
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -503,7 +503,7 @@ public class CryptoClient {
      * @param hashParams Additional params for the request.
      * @return TokenValue
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -540,7 +540,7 @@ public class CryptoClient {
      * @param hashObjectRequests Details of the hashing request. (required)
      * @return List<TokenValue>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
@@ -571,7 +571,7 @@ public class CryptoClient {
      * @param hashParams Additional params for the request.
      * @return List<TokenValue>
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
+     * {@code @http.response.details}
     <table summary="Response Details" border="1">
     <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
     <tr><td> 200 </td><td> The request is successful. </td><td>  -  </td></tr>
