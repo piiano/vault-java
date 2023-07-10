@@ -42,8 +42,4 @@ public class VaultClient {
         pvaultClient.addDefaultHeader("Content-Type", "application/json");
         return pvaultClient;
     }
-
-    public void main(String[] args) {
-        
-    }
 }
