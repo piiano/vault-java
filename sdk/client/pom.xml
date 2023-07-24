@@ -73,7 +73,7 @@
 		<lombok.version>1.18.28</lombok.version>
 		<guava.version>32.1.1-jre</guava.version>
 		<junit.version>4.13.2</junit.version>
-		<junit-jupiter-api.version>5.9.3</junit-jupiter-api.version>
+		<junit-jupiter-api.version>5.10.0</junit-jupiter-api.version>
 	</properties>
 
 	<distributionManagement>
