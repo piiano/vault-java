@@ -10,7 +10,7 @@
 
 # vault-client
 
-This package is compatible with Vault 1.8.2
+This package is compatible with Vault 1.8.3
 
 ## Compiling
 
