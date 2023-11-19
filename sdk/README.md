@@ -16,7 +16,7 @@
 
 This folder contains SDKs that connect to the Vault.
 
-This package is compatible with Vault 1.9.0
+This package is compatible with Vault 1.7.2
 
 ## Compiling
 
