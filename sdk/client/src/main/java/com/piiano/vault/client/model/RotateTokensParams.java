@@ -3,6 +3,8 @@ package com.piiano.vault.client.model;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Parameters for 'rotateTokens' API.
  */
@@ -24,4 +26,9 @@ public class RotateTokensParams {
      * reloadCache Reloads the cache before the action. (optional)
      */
     private Boolean reloadCache;
+
+    /**
+     * xTenantId List of tenant IDs to enforce on the request.
+     */
+    private List<String> xTenantId;
 }
