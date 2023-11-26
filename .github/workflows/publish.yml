@@ -75,15 +75,15 @@ jobs:
       - name: Build & test openapi
         working-directory: sdk/openapi
         run: mvn -B clean install
-
-      - name: Publish openapi
-        if: inputs.bump-package != 'none'
-        working-directory: sdk/openapi
-        run: mvn deploy -B -P sign-artifacts -DskipTests
-        env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+#
+#      - name: Publish openapi
+#        if: inputs.bump-package != 'none'
+#        working-directory: sdk/openapi
+#        run: mvn deploy -B -P sign-artifacts -DskipTests
+#        env:
+#          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+#          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+#          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
       - name: Bump version of client pom.xml
         if: inputs.bump-package != 'none'
