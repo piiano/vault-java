@@ -56,6 +56,7 @@ public class TokensClient {
                 this.defaultParams.getAccessReason().getReason(),
                 ImmutableList.of(tokenizeRequest),
                 this.defaultParams.getExpirationSecs(),
+                this.defaultParams.getXTenantId(),
                 this.defaultParams.getTransactionId(),
                 this.defaultParams.getAccessReason().getAdhocReason(),
                 this.defaultParams.isReloadCache()
@@ -96,6 +97,7 @@ public class TokensClient {
                 accessReason.getReason(),
                 ImmutableList.of(tokenizeRequest),
                 !Strings.isNullOrEmpty(tokenizeParams.getExpirationSecs()) ? tokenizeParams.getExpirationSecs() : this.defaultParams.getExpirationSecs(),
+                tokenizeParams.getXTenantId(),
                 !Strings.isNullOrEmpty(tokenizeParams.getTransactionId()) ? tokenizeParams.getTransactionId() : this.defaultParams.getTransactionId(),
                 accessReason.getAdhocReason(),
                 tokenizeParams.getReloadCache() != null ? tokenizeParams.getReloadCache() : this.defaultParams.isReloadCache()
@@ -133,6 +135,7 @@ public class TokensClient {
                 this.defaultParams.getAccessReason().getReason(),
                 tokenizeRequests,
                 this.defaultParams.getExpirationSecs(),
+                this.defaultParams.getXTenantId(),
                 this.defaultParams.getTransactionId(),
                 this.defaultParams.getAccessReason().getAdhocReason(),
                 this.defaultParams.isReloadCache()
@@ -168,6 +171,7 @@ public class TokensClient {
                 accessReason.getReason(),
                 tokenizeRequests,
                 !Strings.isNullOrEmpty(tokenizeParams.getExpirationSecs()) ? tokenizeParams.getExpirationSecs() : this.defaultParams.getExpirationSecs(),
+                tokenizeParams.getXTenantId(),
                 !Strings.isNullOrEmpty(tokenizeParams.getTransactionId()) ? tokenizeParams.getTransactionId() : this.defaultParams.getTransactionId(),
                 accessReason.getAdhocReason(),
                 tokenizeParams.getReloadCache() != null ? tokenizeParams.getReloadCache() : this.defaultParams.isReloadCache()
@@ -203,6 +207,7 @@ public class TokensClient {
                 queryToken.getObjectIds(), queryToken.getTags() , queryToken.getTokenIds(),
                 props,
                 options,
+                this.defaultParams.getXTenantId(),
                 this.defaultParams.getAccessReason().getAdhocReason(),
                 this.defaultParams.isReloadCache()
         );
@@ -240,6 +245,7 @@ public class TokensClient {
                 queryToken.getObjectIds(), queryToken.getTags() , queryToken.getTokenIds(),
                 props,
                 options,
+                detokenizeParams.getXTenantId(),
                 accessReason.getAdhocReason(),
                 detokenizeParams.getReloadCache() != null ? detokenizeParams.getReloadCache() : this.defaultParams.isReloadCache()
         );
@@ -272,6 +278,7 @@ public class TokensClient {
                 this.defaultParams.getAccessReason().getReason(),
                 queryToken,
                 options,
+                this.defaultParams.getXTenantId(),
                 this.defaultParams.getAccessReason().getAdhocReason(),
                 this.defaultParams.isReloadCache()
         );
@@ -307,6 +314,7 @@ public class TokensClient {
                 accessReason.getReason(),
                 queryToken,
                 options,
+                searchTokensParams.getXTenantId(),
                 accessReason.getAdhocReason(),
                 searchTokensParams.getReloadCache() != null ? searchTokensParams.getReloadCache() : this.defaultParams.isReloadCache()
         );
@@ -341,6 +349,7 @@ public class TokensClient {
                 this.defaultParams.getExpirationSecs(),
                 queryToken.getObjectIds(), queryToken.getTags(), queryToken.getTokenIds(),
                 options,
+                this.defaultParams.getXTenantId(),
                 this.defaultParams.getAccessReason().getAdhocReason(),
                 this.defaultParams.isReloadCache()
         );
@@ -378,6 +387,7 @@ public class TokensClient {
                 updateTokensParams.getExpirationSecs(),
                 queryToken.getObjectIds(), queryToken.getTags(), queryToken.getTokenIds(),
                 options,
+                updateTokensParams.getXTenantId(),
                 accessReason.getAdhocReason(),
                 updateTokensParams.getReloadCache() != null ? updateTokensParams.getReloadCache() : this.defaultParams.isReloadCache()
         );
@@ -410,6 +420,7 @@ public class TokensClient {
                 queryToken.getObjectIds(), queryToken.getTags() , queryToken.getTokenIds(),
                 null,
                 options,
+                this.defaultParams.getXTenantId(),
                 this.defaultParams.getAccessReason().getAdhocReason(),
                 this.defaultParams.isReloadCache()
         );
@@ -445,6 +456,7 @@ public class TokensClient {
                 queryToken.getObjectIds(), queryToken.getTags() , queryToken.getTokenIds(),
                 deleteTokensParams.getTenantId(),
                 options,
+                deleteTokensParams.getXTenantId(),
                 accessReason.getAdhocReason(),
                 deleteTokensParams.getReloadCache() != null ? deleteTokensParams.getReloadCache() : this.defaultParams.isReloadCache()
         );
@@ -475,6 +487,7 @@ public class TokensClient {
                 tokenIds,
                 this.defaultParams.getCollection(),
                 this.defaultParams.getAccessReason().getReason(),
+                this.defaultParams.getXTenantId(),
                 this.defaultParams.getAccessReason().getAdhocReason(),
                 this.defaultParams.isReloadCache()
         );
@@ -508,6 +521,7 @@ public class TokensClient {
                 tokenIds,
                 !Strings.isNullOrEmpty(rotateTokensParams.getCollection()) ? rotateTokensParams.getCollection() : this.defaultParams.getCollection(),
                 accessReason.getReason(),
+                rotateTokensParams.getXTenantId(),
                 accessReason.getAdhocReason(),
                 rotateTokensParams.getReloadCache() != null ? rotateTokensParams.getReloadCache() : this.defaultParams.isReloadCache()
         );
