@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
 
-VAULT_VERSION ?= 1.9.6
+VAULT_VERSION ?= 1.9.7
 OPENAPI_YAML := openapi.yaml
 CODEGEN_IMAGE := openapitools/openapi-generator-cli:v6.4.0
 CODEGEN_CONFIG_FILE := config.yaml
