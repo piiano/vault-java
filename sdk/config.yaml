@@ -1,6 +1,6 @@
 groupId: "com.piiano.vault"
 artifactId: "openapi"
-artifactVersion: "1.2.0"
+artifactVersion: "1.2.1"
 artifactDescription: "Generated client for the open API of Piiano vault"
 artifactUrl: "https://piiano.com/docs/api"
 apiPackage: "com.piiano.vault.client.openapi"
