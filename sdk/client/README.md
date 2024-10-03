@@ -10,7 +10,7 @@
 
 # vault-client
 
-This package is compatible with Vault 1.12.4
+This package is compatible with Vault 1.13.0
 
 ## Compiling
 
