@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
 
-VAULT_VERSION ?= 1.13.0
+VAULT_VERSION ?= 1.13.1
 OPENAPI_YAML := openapi.yaml
 CODEGEN_IMAGE := openapitools/openapi-generator-cli:v6.4.0
 CODEGEN_CONFIG_FILE := config.yaml
@@ -15,7 +15,7 @@ $(OPENAPI_YAML):
 
 $(OPENAPI_FOLDER)/pom.xml: $(OPENAPI_YAML) $(CODEGEN_CONFIG_FILE)
 	mkdir -p $(OPENAPI_FOLDER)/target
-	docker run --rm -v "${PWD}:/pwd" $(CODEGEN_IMAGE) generate \
+	docker run --rm -v "${PWD}:/pwd" $(CODEGEN_IMAGE) generate --additional-properties=useSingleRequestParameter=true \
             -g java \
             -i /pwd/$(OPENAPI_YAML) \
             -c /pwd/$(CODEGEN_CONFIG_FILE) \

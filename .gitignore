@@ -5,6 +5,7 @@ openapi/
 .idea
 *.iml
 *.class
+.vscode
 
 # Build files
 **/target

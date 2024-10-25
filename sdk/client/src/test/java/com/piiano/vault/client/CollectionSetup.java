@@ -29,7 +29,10 @@ public class CollectionSetup {
         deleteCollectionIfExists();
 
         Collection collection = createCollection();
-        return collectionsApi.addCollection(collection, "json", Collections.emptySet());
+        collectionsApi.addCollection(collection).format("json").options(Collections.emptySet()).execute();
+        return collection;
+        // return collectionsApi.addCollection(collection, "json",
+        // Collections.emptySet());
     }
 
     private static void deleteCollectionIfExists() {
@@ -37,7 +40,7 @@ public class CollectionSetup {
         CollectionsApi collectionsApi = new CollectionsApi(pvaultClient);
 
         try {
-            collectionsApi.deleteCollection(collectionName);
+            collectionsApi.deleteCollection(collectionName).execute();
         } catch (ApiException e) {
             // Collection not found - do nothing.
         }
@@ -49,11 +52,10 @@ public class CollectionSetup {
                 .type(Collection.TypeEnum.PERSONS)
                 .addPropertiesItem(
                         new Property().name("name").dataTypeName("NAME").description("Name")
-                                .isEncrypted(true)
-                ).addPropertiesItem(
+                                .isEncrypted(true))
+                .addPropertiesItem(
                         new Property().name("phone_number").dataTypeName("PHONE_NUMBER").description("Phone number")
-                                .isEncrypted(true).isNullable(true)
-                );
+                                .isEncrypted(true).isNullable(true));
     }
 
     private static ApiClient getApiClient() {
