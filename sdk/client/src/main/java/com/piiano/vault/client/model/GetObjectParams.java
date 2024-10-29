@@ -5,14 +5,17 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
-/**
- * Parameters for 'rotateTokens' API.
- */
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class RotateTokensParams extends CommonParams {
+public class GetObjectParams extends CommonParams {
 
-    List<String> tokenIds;
+    private UUID objectId;
+
+    private List<String> props;
+
+    private Set<String> options;
 }

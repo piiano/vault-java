@@ -1,34 +1,23 @@
 package com.piiano.vault.client.model;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Parameters for 'detokenize' API.
  */
 @Data
-@Builder
-public class DetokenizeParams {
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class DetokenizeParams extends CommonParams {
 
-    /**
-     * collection The name of the collection containing the objects. (required)
-     */
-    private String collection;
+    private TokenQuery tokenQuery;
 
-    /**
-     * accessReason Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false. (required)
-     */
-     private AccessReason accessReason;
+    private List<String> props;
 
-    /**
-     * reloadCache Reloads the cache before the action. (optional)
-     */
-    private Boolean reloadCache;
-
-    /**
-     * xTenantId List of tenant IDs to enforce on the request.
-     */
-    private List<String> xTenantId;
+    private Set<String> options;
 }

@@ -1,39 +1,25 @@
 package com.piiano.vault.client.model;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Parameters for 'deleteTokens' API.
  */
 @Data
-@Builder
-public class DeleteTokensParams {
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class DeleteTokensParams extends CommonParams {
 
-    /**
-     * collection The name of the collection containing the objects. (required)
-     */
-    private String collection;
+    private TokenQuery tokenQuery;
 
-    /**
-     * tenantId The tenant ID of the owning object. (optional)
-     */
+    private List<String> props;
+
+    private Set<String> options;
+
     private String tenantId;
-
-    /**
-     * accessReason Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false. (required)
-     */
-     private AccessReason accessReason;
-
-    /**
-     * reloadCache Reloads the cache before the action. (optional)
-     */
-    private Boolean reloadCache;
-
-    /**
-     * xTenantId List of tenant IDs to enforce on the request.
-     */
-    private List<String> xTenantId;
 }

@@ -1,17 +1,16 @@
 package com.piiano.vault.client.model;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 /**
- * Default parameters for the Vault Clients. These parameters are used by the Vault Client for
- * all requests unless set by the request parameters.
+ * Common parameters for the Vault Clients.
  */
 @Data
-@Builder
-public class DefaultParams {
+@SuperBuilder
+public class CommonParams {
 
     /**
      * collection The name of the collection containing the objects. (required)
@@ -24,14 +23,14 @@ public class DefaultParams {
     private AccessReason accessReason;
 
     /**
-     * expirationSecs Token expiration time in seconds. If not set, the default expiration time is used. See the &#x60;PVAULT_EXPIRATION_TOKENS&#x60; variable. (optional)
-     */
-    private String expirationSecs;
-
-    /**
      * reloadCache Reloads the cache before the action. (optional)
      */
     private boolean reloadCache;
+
+    /**
+     * customAudit
+     */
+    private String customAudit;
 
     /**
      * xTenantId List of tenant IDs to enforce on the request.

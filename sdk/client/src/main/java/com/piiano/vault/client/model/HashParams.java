@@ -1,27 +1,19 @@
 package com.piiano.vault.client.model;
 
-import lombok.Builder;
+import com.piiano.vault.client.openapi.model.HashObjectRequest;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 /**
  * Parameters for 'hashObjects' API.
  */
 @Data
-@Builder
-public class HashParams {
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class HashParams extends CommonParams {
 
-    /**
-     * collection The name of the collection containing the objects. (required)
-     */
-    private String collection;
-
-    /**
-     * accessReason Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false. (required)
-     */
-     private AccessReason accessReason;
-
-    /**
-     * reloadCache Reloads the cache before the action. (optional)
-     */
-    private Boolean reloadCache;
+    private List<HashObjectRequest> hashObjectRequests;
 }
