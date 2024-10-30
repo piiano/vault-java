@@ -13,17 +13,17 @@ import java.util.List;
 public class CommonParams {
 
     /**
-     * collection The name of the collection containing the objects. (required)
+     * collection The name of the collection containing the objects.
      */
     private String collection;
 
     /**
-     * accessReason Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false. (required)
+     * accessReason Details of the reason for requesting the property. The default is set when no access reason is provided and PVAULT_SERVICE_FORCE_ACCESS_REASON is false.
      */
     private AccessReason accessReason;
 
     /**
-     * reloadCache Reloads the cache before the action. (optional)
+     * reloadCache Reloads the cache before the action.
      */
     private boolean reloadCache;
 

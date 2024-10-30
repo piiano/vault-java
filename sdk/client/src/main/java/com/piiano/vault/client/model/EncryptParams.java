@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class EncryptParams extends CommonParams {
 
-   private List<EncryptionRequest> encryptionRequest;
+    private List<EncryptionRequest> encryptionRequest;
 
     private String expirationSecs;
 }

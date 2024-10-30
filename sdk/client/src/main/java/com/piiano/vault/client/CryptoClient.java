@@ -25,6 +25,9 @@ public class CryptoClient {
 
     public List<EncryptedValue> encrypt(EncryptParams encryptParams) throws ApiException {
 
+        if (encryptParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         return this.cryptoApi.encrypt(
                 encryptParams.getCollection(),
                 encryptParams.getAccessReason().getReason(),
@@ -39,6 +42,9 @@ public class CryptoClient {
 
     public List<DecryptedObject> decrypt(DecryptParams decryptParams) throws ApiException {
 
+        if (decryptParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         return this.cryptoApi.decrypt(
             decryptParams.getCollection(),
             decryptParams.getAccessReason().getReason(),
@@ -53,6 +59,9 @@ public class CryptoClient {
 
     public List<EncryptedValue> updateEncrypted(UpdateEncryptedParams updateEncryptedParams) throws ApiException {
 
+        if (updateEncryptedParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         return this.cryptoApi.updateEncrypted(
                 updateEncryptedParams.getCollection(),
                 updateEncryptedParams.getAccessReason().getReason(),
@@ -68,6 +77,9 @@ public class CryptoClient {
 
     public List<TokenValue> hash(HashParams hashParams) throws ApiException {
 
+        if (hashParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         return this.cryptoApi.hashObjects(
                 hashParams.getCollection(),
                 hashParams.getAccessReason().getReason(),

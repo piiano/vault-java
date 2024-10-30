@@ -26,6 +26,9 @@ public class TokenClient {
 
     public List<TokenValue> tokenize(TokenizeParams tokenizeParams) throws ApiException {
 
+        if (tokenizeParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         return this.tokensApi.tokenize(
                 tokenizeParams.getCollection(),
                 tokenizeParams.getAccessReason().getReason(),
@@ -41,6 +44,9 @@ public class TokenClient {
 
     public List<DetokenizedToken> detokenize(DetokenizeParams detokenizeParams) throws ApiException {
 
+        if (detokenizeParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         return this.tokensApi.detokenize(
                 detokenizeParams.getCollection(),
                 detokenizeParams.getAccessReason().getReason())
@@ -58,6 +64,9 @@ public class TokenClient {
 
     public List<TokenMetadata> searchTokens(SearchTokensParams searchTokensParams) throws ApiException {
 
+        if (searchTokensParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         QueryToken queryToken = new QueryToken();
         queryToken.setTokenIds(searchTokensParams.getTokenQuery().getTokenIds());
         queryToken.setObjectIds(searchTokensParams.getTokenQuery().getObjectIds());
@@ -77,6 +86,9 @@ public class TokenClient {
 
     public void updateTokens(UpdateTokensParams updateTokensParams) throws ApiException {
 
+        if (updateTokensParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         this.tokensApi.updateTokens(
                 updateTokensParams.getCollection(),
                 updateTokensParams.getAccessReason().getReason(),
@@ -94,6 +106,9 @@ public class TokenClient {
 
     public void deleteTokens(DeleteTokensParams deleteTokensParams) throws ApiException {
 
+        if (deleteTokensParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         this.tokensApi.deleteTokens(
                 deleteTokensParams.getCollection(),
                 deleteTokensParams.getAccessReason().getReason())
@@ -111,6 +126,9 @@ public class TokenClient {
 
     public Map<String, String> rotateTokens(RotateTokensParams rotateTokensParams) throws ApiException {
 
+        if (rotateTokensParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         return this.tokensApi.rotateTokens(
                 rotateTokensParams.getTokenIds(),
                 rotateTokensParams.getCollection(),

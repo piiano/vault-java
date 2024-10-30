@@ -25,6 +25,9 @@ public class ObjectClient {
 
     public ObjectID addObject(AddObjectParams addObjectParams) throws ApiException {
 
+        if (addObjectParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         return this.objectsApi.addObject(
                 addObjectParams.getCollection(),
                 addObjectParams.getAccessReason().getReason(),
@@ -41,6 +44,9 @@ public class ObjectClient {
 
     public BulkObjectResponse addObjects(AddObjectsParams addObjectsParams) throws ApiException {
 
+        if (addObjectsParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         return this.objectsApi.addObjects(
                 addObjectsParams.getCollection(),
                 addObjectsParams.getAccessReason().getReason(),
@@ -57,6 +63,9 @@ public class ObjectClient {
 
     public void deleteObjectById(DeleteObjectParams deleteObjectParams) throws ApiException {
 
+        if (deleteObjectParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         this.objectsApi.deleteObjectById(
                 deleteObjectParams.getCollection(),
                 deleteObjectParams.getObjectId(),
@@ -71,6 +80,9 @@ public class ObjectClient {
 
     public BulkObjectResponse deleteObjects(DeleteObjectsParams deleteObjectsParams) throws ApiException {
 
+        if (deleteObjectsParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         return this.objectsApi.deleteObjects(
                 deleteObjectsParams.getCollection(),
                 deleteObjectsParams.getAccessReason().getReason())
@@ -85,6 +97,9 @@ public class ObjectClient {
 
     public Map<String, Object> getObjectById(GetObjectParams getObjectParams) throws ApiException {
 
+        if (getObjectParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         return this.objectsApi.getObjectById(
                 getObjectParams.getCollection(),
                 getObjectParams.getObjectId(),
@@ -100,6 +115,9 @@ public class ObjectClient {
 
     public void listObjects(ListObjectsParams listObjectsParams) throws ApiException {
 
+        if (listObjectsParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         this.objectsApi.listObjects(
                 listObjectsParams.getCollection(),
                 listObjectsParams.getAccessReason().getReason())
@@ -114,6 +132,9 @@ public class ObjectClient {
 
     public Count getObjectsCount(CommonParams commonParams) throws ApiException {
 
+        if (commonParams.getAccessReason() == null) {
+            throw new ApiException("Access reason is required");
+        }
         return this.objectsApi.getObjectsCount(
                 commonParams.getCollection(),
                 commonParams.getAccessReason().getReason())

@@ -17,8 +17,5 @@ public class TokenizeParams extends CommonParams {
 
     private List<TokenizeRequest> tokenizeRequest;
 
-    /**
-     * expirationSecs Token expiration time in seconds. If not set, the default expiration time is used. See the &#x60;PVAULT_EXPIRATION_TOKENS&#x60; variable. (optional)
-     */
     private String expirationSecs;
 }

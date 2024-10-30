@@ -4,12 +4,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.piiano.vault.client.CryptoClient;
 import com.piiano.vault.client.model.AccessReason;
-import com.piiano.vault.client.model.DefaultParams;
+import com.piiano.vault.client.model.DecryptParams;
+import com.piiano.vault.client.model.EncryptParams;
 import com.piiano.vault.client.openapi.ApiException;
 import com.piiano.vault.client.openapi.model.*;
 import lombok.Getter;
 
 import java.util.Collections;
+import java.util.List;
 
 import static com.piiano.vault.client.VaultClient.getPvaultClient;
 
@@ -22,15 +24,17 @@ public class Encryptor {
 	private final EncryptionType encryptionType;
 
 	@Getter
+	private final String collectionName;
+
+	@Getter
 	private final String propertyName;
 
-	public Encryptor(EncryptionType encryptionType, String collection, String propertyName) {
+	public Encryptor(EncryptionType encryptionType, String collectionName, String propertyName) {
 
-		this.cryptoClient = new CryptoClient(getPvaultClient(), DefaultParams.builder()
-				.collection(collection)
-				.accessReason(AccessReason.AppFunctionality).build());
+		this.cryptoClient = new CryptoClient(getPvaultClient());
 
 		this.encryptionType = encryptionType;
+		this.collectionName = collectionName;
 		this.propertyName = propertyName;
 	}
 
@@ -45,10 +49,16 @@ public class Encryptor {
 				.type(this.encryptionType)
 				._object(new InputObject().fields(ImmutableMap.of(this.propertyName, propValue)));
 
-		EncryptedValue encrypted = this.cryptoClient.encrypt(request);
+		List<EncryptedValue> encrypted = this.cryptoClient.encrypt(
+				EncryptParams.builder()
+						.collection(this.collectionName)
+						.encryptionRequest(ImmutableList.of(request))
+						.accessReason(AccessReason.AppFunctionality)
+						.build()
+		);
 
-		if (encrypted != null) {
-			return PREFIX_ENCRYPTED + encrypted.getCiphertext();
+		if (encrypted != null && encrypted.size() == 1) {
+			return PREFIX_ENCRYPTED + encrypted.get(0).getCiphertext();
 		}
 		return null;
 	}
@@ -66,10 +76,16 @@ public class Encryptor {
 		DecryptionRequest request = new DecryptionRequest().encryptedObject(
 				new EncryptedObjectInput().ciphertext(ciphertext)).props(ImmutableList.of(this.propertyName));
 
-		DecryptedObject decrypted = this.cryptoClient.decrypt(request, Collections.emptySet());
+		List<DecryptedObject> decrypted = this.cryptoClient.decrypt(
+				DecryptParams.builder()
+						.collection(this.collectionName)
+						.decryptionRequests(ImmutableList.of(request))
+						.accessReason(AccessReason.AppFunctionality)
+						.build()
+		);
 
-		if (decrypted != null) {
-			return decrypted.getFields().get(this.propertyName);
+		if (decrypted != null && decrypted.size() == 1) {
+			return decrypted.get(0).getFields().get(this.propertyName);
 		}
 		return null;
 	}
