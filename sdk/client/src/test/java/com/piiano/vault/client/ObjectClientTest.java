@@ -18,11 +18,11 @@ import static com.piiano.vault.client.DefaultClient.getDefaultClient;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class VaultClientTest {
+public class ObjectClientTest {
 
     private final ApiClient apiClient = getDefaultClient();
 
-    private final VaultClient vaultClient = new VaultClient(apiClient);
+    private final ObjectClient objectClient = new ObjectClient(apiClient);
 
     @BeforeEach
     public void beforeEach() throws ApiException {
@@ -42,7 +42,7 @@ public class VaultClientTest {
         String name = "John";
         Map<String, Object> fields = ImmutableMap.of(propName, name);
 
-        ObjectID objectID = vaultClient.objectClient().addObject(
+        ObjectID objectID = objectClient.addObject(
                 AddObjectParams.builder()
                         .collection(collectionName)
                         .fields(fields)
@@ -52,7 +52,7 @@ public class VaultClientTest {
         assertNotNull(objectID.getId());
 
         // Get the object
-        Map<String, Object> objectFields = vaultClient.objectClient().getObject(
+        Map<String, Object> objectFields = objectClient.getObject(
                 GetObjectParams.builder()
                         .collection(collectionName)
                         .objectId(objectID.getId())
@@ -64,7 +64,7 @@ public class VaultClientTest {
 
         // Update the object
         String newName = "Jane";
-        vaultClient.objectClient().updateObject(
+        objectClient.updateObject(
                 UpdateObjectParams.builder()
                         .collection(collectionName)
                         .objectId(objectID.getId())
@@ -73,7 +73,7 @@ public class VaultClientTest {
                         .build());
 
         // get the object again and validate the updated value
-        objectFields = vaultClient.objectClient().getObject(
+        objectFields = objectClient.getObject(
                 GetObjectParams.builder()
                         .collection(collectionName)
                         .objectId(objectID.getId())
@@ -84,7 +84,7 @@ public class VaultClientTest {
         assertEquals(newName, objectFields.get(propName));
 
         // Search the object
-        ObjectFieldsPage objectsPage = vaultClient.objectClient().searchObjects(
+        ObjectFieldsPage objectsPage = objectClient.searchObjects(
                 SearchObjectsParams.builder()
                         .collection(collectionName)
                         .query(new Query().match(ImmutableMap.of("id", objectID.getId())))
@@ -94,7 +94,7 @@ public class VaultClientTest {
         assertEquals(1, objectsPage.getResults().size());
         assertEquals(newName, objectsPage.getResults().get(0).get(propName));
 
-        vaultClient.objectClient().deleteObject(
+        objectClient.deleteObject(
                 DeleteObjectParams.builder()
                         .collection(collectionName)
                         .objectId(objectID.getId())
@@ -102,7 +102,7 @@ public class VaultClientTest {
                         .build());
 
         // Search the token again and verify it is deleted
-        objectsPage = vaultClient.objectClient().searchObjects(
+        objectsPage = objectClient.searchObjects(
                 SearchObjectsParams.builder()
                         .collection(collectionName)
                         .query(new Query().match(ImmutableMap.of("id", objectID.getId())))
@@ -111,38 +111,5 @@ public class VaultClientTest {
                         .build());
 
         assertEquals(0, objectsPage.getResults().size());
-    }
-
-
-    @Test
-    public void tokenizeTest() throws ApiException {
-        TokenizeRequest request = new TokenizeRequest()
-                .type(TokenType.DETERMINISTIC)
-                ._object(new InputObject().fields(ImmutableMap.of("name", "John")));
-
-        List<TokenValue> result = vaultClient.tokenClient().tokenize(
-                TokenizeParams.builder()
-                        .collection(collectionName)
-                        .accessReason(AccessReason.AppFunctionality)
-                        .tokenizeRequest(ImmutableList.of(request))
-                        .build());
-        assertEquals(1, result.size());
-        assertNotNull(result.get(0).getTokenId());
-    }
-
-    @Test
-    public void encryptionTest() throws ApiException {
-        EncryptionRequest request = new EncryptionRequest()
-                .type(EncryptionType.DETERMINISTIC)
-                ._object(new InputObject().fields(ImmutableMap.of("name", "John")));
-
-        List<EncryptedValue> result = vaultClient.cryptoClient().encrypt(
-                EncryptParams.builder()
-                        .collection(collectionName)
-                        .accessReason(AccessReason.AppFunctionality)
-                        .encryptionRequest(ImmutableList.of(request))
-                        .build());
-        assertEquals(1, result.size());
-        assertNotNull(result.get(0).getCiphertext());
     }
 }

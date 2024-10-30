@@ -1,5 +1,6 @@
 package com.piiano.vault.client.model;
 
+import com.piiano.vault.client.openapi.model.Query;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
@@ -11,9 +12,9 @@ import java.util.UUID;
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class ListObjectsParams extends CommonParams {
+public class SearchObjectsParams extends CommonParams {
 
-    private List<UUID> objectIds;
+    private Query query;
 
     private List<String> props;
 

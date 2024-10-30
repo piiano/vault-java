@@ -4,7 +4,7 @@ import com.piiano.vault.client.openapi.ApiClient;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Client for the Tokens API.
+ * Client for the Vault API.
  */
 public class VaultClient {
 

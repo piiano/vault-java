@@ -5,23 +5,21 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class ListObjectsParams extends CommonParams {
+public class UpdateObjectsParams extends CommonParams {
 
-    private List<UUID> objectIds;
-
-    private List<String> props;
+    private List<Map<String, Object>> objects;
 
     private Set<String> options;
 
-    private String cursor;
+    private String expirationSecs;
 
-    private Integer pageSize;
+    private Boolean isImport;
 
-    private String xTransParam;
+    private String exportKey;
 }

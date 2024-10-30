@@ -11,7 +11,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public class AddObjectParams extends CommonParams {
 
-    private final Map<String, Object> fields;
+    private Map<String, Object> fields;
     private String expirationSecs;
     private Boolean isImport;
     private String exportKey;

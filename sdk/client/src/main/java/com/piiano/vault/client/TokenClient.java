@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Client for the Tokens API.
+ * Client for the Token API.
  */
 public class TokenClient {
 
