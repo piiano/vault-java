@@ -29,7 +29,7 @@ public class CollectionSetup {
         deleteCollectionIfExists();
 
         Collection collection = createCollection();
-        return collectionsApi.addCollection(collection, "json", Collections.emptySet());
+        return collectionsApi.addCollection(collection).format("json").execute();
     }
 
     private static void deleteCollectionIfExists() {
@@ -37,7 +37,7 @@ public class CollectionSetup {
         CollectionsApi collectionsApi = new CollectionsApi(pvaultClient);
 
         try {
-            collectionsApi.deleteCollection(collectionName);
+            collectionsApi.deleteCollection(collectionName).execute();
         } catch (ApiException e) {
             // Collection not found - do nothing.
         }

@@ -1,27 +1,32 @@
 package com.piiano.vault.client;
 
-import com.piiano.vault.client.model.*;
 import com.piiano.vault.client.openapi.ApiClient;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Client for the Tokens API.
+ * Client for the Vault API.
  */
 public class VaultClient {
 
-    private final TokensClient tokensClient;
+    private final ObjectClient objectClient;
+    private final TokenClient tokenClient;
     private final CryptoClient cryptoClient;
 
-    public VaultClient(ApiClient apiClient, DefaultParams defaultParams) {
-        this.tokensClient = new TokensClient(apiClient, defaultParams);
-        this.cryptoClient = new CryptoClient(apiClient, defaultParams);
+    public VaultClient(ApiClient apiClient) {
+        this.objectClient = new ObjectClient(apiClient);
+        this.tokenClient = new TokenClient(apiClient);
+        this.cryptoClient = new CryptoClient(apiClient);
     }
 
-    public TokensClient tokensClient() {
-        return tokensClient;
+    public ObjectClient objectClient() {
+        return objectClient;
     }
 
-    public CryptoClient cryptoClint() {
+    public TokenClient tokenClient() {
+        return tokenClient;
+    }
+
+    public CryptoClient cryptoClient() {
         return cryptoClient;
     }
 

@@ -1,21 +1,25 @@
 package com.piiano.vault.client.model;
 
-import com.piiano.vault.client.openapi.model.EncryptionRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-/**
- * Parameters for 'encrypt' API.
- */
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class EncryptParams extends CommonParams {
+public class UpdateObjectsParams extends CommonParams {
 
-    private List<EncryptionRequest> encryptionRequest;
+    private List<Map<String, Object>> objects;
+
+    private Set<String> options;
 
     private String expirationSecs;
+
+    private Boolean isImport;
+
+    private String exportKey;
 }

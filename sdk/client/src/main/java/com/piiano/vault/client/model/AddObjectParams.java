@@ -1,21 +1,18 @@
 package com.piiano.vault.client.model;
 
-import com.piiano.vault.client.openapi.model.TokenizeRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
+import java.util.Map;
 
-/**
- * Parameters for 'tokenize' API.
- */
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class TokenizeParams extends CommonParams {
+public class AddObjectParams extends CommonParams {
 
-    private List<TokenizeRequest> tokenizeRequest;
-
+    private Map<String, Object> fields;
     private String expirationSecs;
+    private Boolean isImport;
+    private String exportKey;
 }

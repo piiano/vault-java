@@ -1,25 +1,28 @@
 package com.piiano.vault.client.model;
 
-import com.piiano.vault.client.openapi.model.UpdateTokenRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
-/**
- * Parameters for 'updateTokens' API.
- */
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class UpdateTokensParams extends CommonParams {
+public class UpdateObjectParams extends CommonParams {
 
-    private UpdateTokenRequest updateTokenRequest;
+    private UUID objectId;
 
-    private TokenQuery tokenQuery;
+    private Map<String, Object> fields;
 
     private Set<String> options;
 
     private String expirationSecs;
+
+    private Boolean isImport;
+
+    private String exportKey;
 }

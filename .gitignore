@@ -3,6 +3,7 @@ openapi/
 
 # IDE
 .idea
+.vscode
 *.iml
 *.class
 
