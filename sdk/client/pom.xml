@@ -5,7 +5,7 @@
 
 	<groupId>com.piiano.vault</groupId>
 	<artifactId>client</artifactId>
-	<version>1.3.0</version>
+	<version>1.3.1</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>Piiano vault sdk</description>
 	<url>https://github.com/piiano/vault-java/tree/main/sdk/client</url>
