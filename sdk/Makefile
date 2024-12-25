@@ -2,7 +2,7 @@
 
 VAULT_VERSION ?= 1.14.0
 OPENAPI_YAML := openapi.yaml
-CODEGEN_IMAGE := openapitools/openapi-generator-cli:v6.4.0
+CODEGEN_IMAGE := openapitools/openapi-generator-cli:v7.10.0
 CODEGEN_CONFIG_FILE := config.yaml
 OPENAPI_FOLDER := openapi
 CLIENT_FOLDER := client
