@@ -30,8 +30,8 @@ public class CryptoClient {
         }
         return this.cryptoApi.encrypt(
                 encryptParams.getCollection(),
-                encryptParams.getAccessReason().getReason(),
                 encryptParams.getEncryptionRequest())
+                .reason(encryptParams.getAccessReason().getReason())
                 .adhocReason(encryptParams.getAccessReason().getAdhocReason())
                 .expirationSecs(encryptParams.getExpirationSecs())
                 .customAudit(encryptParams.getCustomAudit())
@@ -46,15 +46,15 @@ public class CryptoClient {
             throw new ApiException("Access reason is required");
         }
         return this.cryptoApi.decrypt(
-            decryptParams.getCollection(),
-            decryptParams.getAccessReason().getReason(),
-            decryptParams.getDecryptionRequests())
-            .adhocReason(decryptParams.getAccessReason().getAdhocReason())
-            .options(decryptParams.getOptions())
-            .customAudit(decryptParams.getCustomAudit())
-            .reloadCache(decryptParams.isReloadCache())
-            .xTenantId(decryptParams.getXTenantId())
-            .execute();
+                decryptParams.getCollection(),
+                decryptParams.getDecryptionRequests())
+                .reason(decryptParams.getAccessReason().getReason())
+                .adhocReason(decryptParams.getAccessReason().getAdhocReason())
+                .options(decryptParams.getOptions())
+                .customAudit(decryptParams.getCustomAudit())
+                .reloadCache(decryptParams.isReloadCache())
+                .xTenantId(decryptParams.getXTenantId())
+                .execute();
     }
 
     public List<EncryptedValue> updateEncrypted(UpdateEncryptedParams updateEncryptedParams) throws ApiException {
@@ -64,8 +64,8 @@ public class CryptoClient {
         }
         return this.cryptoApi.updateEncrypted(
                 updateEncryptedParams.getCollection(),
-                updateEncryptedParams.getAccessReason().getReason(),
                 updateEncryptedParams.getUpdateEncryptionRequests())
+                .reason(updateEncryptedParams.getAccessReason().getReason())
                 .adhocReason(updateEncryptedParams.getAccessReason().getAdhocReason())
                 .expirationSecs(updateEncryptedParams.getExpirationSecs())
                 .options(updateEncryptedParams.getOptions())
@@ -82,8 +82,8 @@ public class CryptoClient {
         }
         return this.cryptoApi.hashObjects(
                 hashParams.getCollection(),
-                hashParams.getAccessReason().getReason(),
                 hashParams.getHashObjectRequests())
+                .reason(hashParams.getAccessReason().getReason())
                 .adhocReason(hashParams.getAccessReason().getAdhocReason())
                 .customAudit(hashParams.getCustomAudit())
                 .reloadCache(hashParams.isReloadCache())

@@ -25,13 +25,10 @@ public class ObjectClient {
 
     public ObjectID addObject(AddObjectParams addObjectParams) throws ApiException {
 
-        if (addObjectParams.getAccessReason() == null) {
-            throw new ApiException("Access reason is required");
-        }
         return this.objectsApi.addObject(
                 addObjectParams.getCollection(),
-                addObjectParams.getAccessReason().getReason(),
                 addObjectParams.getFields())
+                .reason(addObjectParams.getAccessReason().getReason())
                 .adhocReason(addObjectParams.getAccessReason().getAdhocReason())
                 .expirationSecs(addObjectParams.getExpirationSecs())
                 .customAudit(addObjectParams.getCustomAudit())
@@ -44,13 +41,10 @@ public class ObjectClient {
 
     public BulkObjectResponse addObjects(AddObjectsParams addObjectsParams) throws ApiException {
 
-        if (addObjectsParams.getAccessReason() == null) {
-            throw new ApiException("Access reason is required");
-        }
         return this.objectsApi.addObjects(
                 addObjectsParams.getCollection(),
-                addObjectsParams.getAccessReason().getReason(),
                 addObjectsParams.getFields())
+                .reason(addObjectsParams.getAccessReason().getReason())
                 .adhocReason(addObjectsParams.getAccessReason().getAdhocReason())
                 .expirationSecs(addObjectsParams.getExpirationSecs())
                 .customAudit(addObjectsParams.getCustomAudit())
@@ -63,14 +57,11 @@ public class ObjectClient {
 
     public void deleteObject(DeleteObjectParams deleteObjectParams) throws ApiException {
 
-        if (deleteObjectParams.getAccessReason() == null) {
-            throw new ApiException("Access reason is required");
-        }
         this.objectsApi.deleteObjectById(
                 deleteObjectParams.getCollection(),
-                deleteObjectParams.getObjectId(),
-                deleteObjectParams.getAccessReason().getReason())
+                deleteObjectParams.getObjectId())
                 .options(deleteObjectParams.getOptions())
+                .reason(deleteObjectParams.getAccessReason().getReason())
                 .adhocReason(deleteObjectParams.getAccessReason().getAdhocReason())
                 .customAudit(deleteObjectParams.getCustomAudit())
                 .reloadCache(deleteObjectParams.isReloadCache())
@@ -80,14 +71,11 @@ public class ObjectClient {
 
     public BulkObjectResponse deleteObjects(DeleteObjectsParams deleteObjectsParams) throws ApiException {
 
-        if (deleteObjectsParams.getAccessReason() == null) {
-            throw new ApiException("Access reason is required");
-        }
         return this.objectsApi.deleteObjects(
-                deleteObjectsParams.getCollection(),
-                deleteObjectsParams.getAccessReason().getReason())
+                deleteObjectsParams.getCollection())
                 .objectID(deleteObjectsParams.getObjectIds())
                 .options(deleteObjectsParams.getOptions())
+                .reason(deleteObjectsParams.getAccessReason().getReason())
                 .adhocReason(deleteObjectsParams.getAccessReason().getAdhocReason())
                 .customAudit(deleteObjectsParams.getCustomAudit())
                 .reloadCache(deleteObjectsParams.isReloadCache())
@@ -97,15 +85,12 @@ public class ObjectClient {
 
     public Map<String, Object> getObject(GetObjectParams getObjectParams) throws ApiException {
 
-        if (getObjectParams.getAccessReason() == null) {
-            throw new ApiException("Access reason is required");
-        }
         return this.objectsApi.getObjectById(
                 getObjectParams.getCollection(),
-                getObjectParams.getObjectId(),
-                getObjectParams.getAccessReason().getReason())
+                getObjectParams.getObjectId())
                 .props(getObjectParams.getProps())
                 .options(getObjectParams.getOptions())
+                .reason(getObjectParams.getAccessReason().getReason())
                 .adhocReason(getObjectParams.getAccessReason().getAdhocReason())
                 .customAudit(getObjectParams.getCustomAudit())
                 .reloadCache(getObjectParams.isReloadCache())
@@ -115,12 +100,9 @@ public class ObjectClient {
 
     public ObjectFieldsPage listObjects(ListObjectsParams listObjectsParams) throws ApiException {
 
-        if (listObjectsParams.getAccessReason() == null) {
-            throw new ApiException("Access reason is required");
-        }
         return this.objectsApi.listObjects(
-                listObjectsParams.getCollection(),
-                listObjectsParams.getAccessReason().getReason())
+                listObjectsParams.getCollection())
+                .reason(listObjectsParams.getAccessReason().getReason())
                 .adhocReason(listObjectsParams.getAccessReason().getAdhocReason())
                 .ids(listObjectsParams.getObjectIds())
                 .props(listObjectsParams.getProps())
@@ -136,13 +118,10 @@ public class ObjectClient {
 
     public ObjectFieldsPage searchObjects(SearchObjectsParams searchObjectsParams) throws ApiException {
 
-        if (searchObjectsParams.getAccessReason() == null) {
-            throw new ApiException("Access reason is required");
-        }
         return this.objectsApi.searchObjects(
                 searchObjectsParams.getCollection(),
-                searchObjectsParams.getAccessReason().getReason(),
                 searchObjectsParams.getQuery())
+                .reason(searchObjectsParams.getAccessReason().getReason())
                 .adhocReason(searchObjectsParams.getAccessReason().getAdhocReason())
                 .props(searchObjectsParams.getProps())
                 .cursor(searchObjectsParams.getCursor())
@@ -157,14 +136,11 @@ public class ObjectClient {
 
     public void updateObject(UpdateObjectParams updateObjectParams) throws ApiException {
 
-        if (updateObjectParams.getAccessReason() == null) {
-            throw new ApiException("Access reason is required");
-        }
         this.objectsApi.updateObjectById(
                 updateObjectParams.getCollection(),
                 updateObjectParams.getObjectId(),
-                updateObjectParams.getAccessReason().getReason(),
                 updateObjectParams.getFields())
+                .reason(updateObjectParams.getAccessReason().getReason())
                 .adhocReason(updateObjectParams.getAccessReason().getAdhocReason())
                 .expirationSecs(updateObjectParams.getExpirationSecs())
                 .options(updateObjectParams.getOptions())
@@ -178,12 +154,9 @@ public class ObjectClient {
 
     public BulkObjectResponse updateObjects(UpdateObjectsParams updateObjectsParams) throws ApiException {
 
-        if (updateObjectsParams.getAccessReason() == null) {
-            throw new ApiException("Access reason is required");
-        }
         return this.objectsApi.updateObjects(
-                updateObjectsParams.getCollection(),
-                updateObjectsParams.getAccessReason().getReason())
+                updateObjectsParams.getCollection())
+                .reason(updateObjectsParams.getAccessReason().getReason())
                 .adhocReason(updateObjectsParams.getAccessReason().getAdhocReason())
                 .requestBody(updateObjectsParams.getObjects())
                 .expirationSecs(updateObjectsParams.getExpirationSecs())
@@ -198,12 +171,9 @@ public class ObjectClient {
 
     public Count getObjectsCount(CommonParams commonParams) throws ApiException {
 
-        if (commonParams.getAccessReason() == null) {
-            throw new ApiException("Access reason is required");
-        }
         return this.objectsApi.getObjectsCount(
-                commonParams.getCollection(),
-                commonParams.getAccessReason().getReason())
+                commonParams.getCollection())
+                .reason(commonParams.getAccessReason().getReason())
                 .adhocReason(commonParams.getAccessReason().getAdhocReason())
                 .customAudit(commonParams.getCustomAudit())
                 .reloadCache(commonParams.isReloadCache())
